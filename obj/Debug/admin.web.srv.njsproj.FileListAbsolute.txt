@@ -1,0 +1,2 @@
+C:\afriknet\admin.web.srv\obj\Debug\admin.web.srv.njsprojResolveAssemblyReference.cache
+C:\afriknet\admin.web.srv\bin\Microsoft.NodejsTools.WebRole.dll
