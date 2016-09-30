@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4679e24c-a515-45a6-a776-99300f142fee}</ProjectGuid>
     <ProjectHome />
-    <ProjectView>ShowAllFiles</ProjectView>
+    <ProjectView>ProjectFiles</ProjectView>
     <StartupFile>app.js</StartupFile>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -42,7 +42,17 @@
     <Compile Include="config\session.js" />
     <Compile Include="config\sockets.js" />
     <Compile Include="config\views.js" />
+    <Content Include="server\breeze_sequel\package.json" />
+    <Content Include="server\breeze_sequel\README.md" />
     <Content Include="tasks\README.md" />
+    <Compile Include="server\breeze_sequel\dbUtils.js" />
+    <Compile Include="server\breeze_sequel\main.js" />
+    <Compile Include="server\breeze_sequel\MetadataMapper.js" />
+    <Compile Include="server\breeze_sequel\SequelizeManager.js" />
+    <Compile Include="server\breeze_sequel\SequelizeQuery.json.js" />
+    <Compile Include="server\breeze_sequel\SequelizeSaveHandler.js" />
+    <Compile Include="server\breeze_sequel\sequelizeUtils.js" />
+    <Compile Include="server\breeze_sequel\utils.js" />
     <Compile Include="tasks\pipeline.js" />
     <Content Include="views\403.ejs" />
     <Content Include="views\404.ejs" />
@@ -102,6 +112,8 @@
     <Folder Include="config\env" />
     <Folder Include="config\locales" />
     <Folder Include="server\" />
+    <Folder Include="server\breeze_sequel\" />
+    <Folder Include="server\lib\" />
     <Folder Include="tasks" />
     <Folder Include="tasks\config" />
     <Folder Include="tasks\register" />
@@ -122,6 +134,8 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="server\dispatcher.ts" />
+    <TypeScriptCompile Include="server\lib\adapter.ts" />
+    <TypeScriptCompile Include="server\lib\dataservice.ts" />
     <TypeScriptCompile Include="typings\breeze\breeze.d.ts" />
     <TypeScriptCompile Include="typings\express\express.d.ts" />
     <TypeScriptCompile Include="typings\formidable\formidable.d.ts" />

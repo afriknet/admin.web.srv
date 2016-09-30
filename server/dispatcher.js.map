@@ -1,1 +1,1 @@
-{"version":3,"file":"dispatcher.js","sourceRoot":"","sources":["dispatcher.ts"],"names":[],"mappings":";AAIA,cAAqB,GAAoB,EAAE,GAAqB;IAE5D,GAAG,CAAC,IAAI,CAAC,MAAM,CAAC,CAAC;AAErB,CAAC;AAJe,YAAI,OAInB,CAAA"}
+{"version":3,"file":"dispatcher.js","sourceRoot":"","sources":["dispatcher.ts"],"names":[],"mappings":"AAAA,2CAA2C;;AAG3C,IAAO,EAAE,WAAW,mBAAmB,CAAC,CAAC;AAEzC,cAAqB,GAAoB,EAAE,GAAqB;IAE5D,IAAI,GAAG,GAAmB,IAAI,EAAE,CAAC,WAAW,EAAE,CAAC;IAE/C,GAAG,CAAC,IAAI,CAAC,MAAM,CAAC,CAAC;AAErB,CAAC;AANe,YAAI,OAMnB,CAAA"}
