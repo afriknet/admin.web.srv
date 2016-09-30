@@ -2,8 +2,8 @@
 var root = require('root-path');
 
 ////import ctx = require('../appcontext');
-//import Q = require('q');
-//var br_sequel = require(root('/server/breeze_sequel/main'));
+import Q = require('q');
+var br_sequel = require(root('/server/breeze_sequel/main'));
 //var sequel_manager = br_sequel.SequelizeManager;
 //var sequel_query = br_sequel.SequelizeQuery;
 //var sequel_save = br_sequel.SequelizeSaveHandler;
