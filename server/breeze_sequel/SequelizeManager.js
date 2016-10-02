@@ -14,8 +14,8 @@ module.exports = SequelizeManager;
 function SequelizeManager(dbConfig, sequelizeOptions) {
   var defaultOptions = {
     dialect: "mysql", // or 'sqlite', 'postgres', 'mariadb'
-    //port: 3306, // or 5432 (for postgres)
-    // omitNull: true,
+    port: 3306, // or 5432 (for postgres)
+    omitNull: true,
     logging: console.log
   };
   this.sequelizeOptions = _.extend(defaultOptions, sequelizeOptions || {});

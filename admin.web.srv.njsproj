@@ -114,6 +114,7 @@
     <Folder Include="server\" />
     <Folder Include="server\breeze_sequel\" />
     <Folder Include="server\lib\" />
+    <Folder Include="server\datastore\" />
     <Folder Include="tasks" />
     <Folder Include="tasks\config" />
     <Folder Include="tasks\register" />
@@ -133,9 +134,12 @@
     <Folder Include="views" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="server\lib\appcontext.ts" />
+    <TypeScriptCompile Include="server\datastore\store.ts" />
     <TypeScriptCompile Include="server\dispatcher.ts" />
     <TypeScriptCompile Include="server\lib\adapter.ts" />
     <TypeScriptCompile Include="server\lib\dataservice.ts" />
+    <TypeScriptCompile Include="server\lib\utils.ts" />
     <TypeScriptCompile Include="typings\breeze\breeze.d.ts" />
     <TypeScriptCompile Include="typings\express\express.d.ts" />
     <TypeScriptCompile Include="typings\formidable\formidable.d.ts" />
