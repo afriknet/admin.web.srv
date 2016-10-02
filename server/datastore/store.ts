@@ -1,7 +1,7 @@
 ﻿/// <reference path="../../typings/tsd.d.ts" />
 
 var root = require('root-path');
-var metadata = require(root('/server/init/meta'));
+var metadata = require(root('/server/datastore/meta'));
 var breeze_sequel = require(root('/server/breeze_sequel/main'));
 import breeze = require('breeze-client');
 

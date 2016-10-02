@@ -1,4 +1,5 @@
-﻿
+﻿/// <reference path="../datastore/store.ts" />
+
 import _ = require('lodash');
 import express = require('express');
 
@@ -10,6 +11,7 @@ var bs = require(root('/server/breeze_sequel/main'));
 var s_mgr = bs.SequelizeManager;
 var sqlize = require('sequelize');
 
+import store = require('../datastore/store');
 var con = require(root('/config/connections'));
 var mysql = con.connections.local_mysql;
 var conn = null;// boot.start_db(null);
@@ -39,8 +41,10 @@ function open_db_connection() {
         host:'mysql5014.smarterasp.net'
     });
 
-    conn.sequelize.query("select * from item", { type: sqlize.QueryTypes.SELECT }).then(list => {
-        var d = list;
-    });
+    conn.importMetadata(store.ModelStore.exportMetadata());
+
+    //conn.sequelize.query("select * from item", { type: sqlize.QueryTypes.SELECT }).then(list => {
+    //    var d = list;
+    //});
 
 }

@@ -23,146 +23,147 @@ br_sequel.breeze.config.initializeAdapterInstance('dataService', 'adapter_webApi
 export class DataService {
 
     private context: ctx.AppContext;
-    //private model: string;
+    private model: string;
 
-    constructor(context: ctx.AppContext) {
-        this.context = context;    
+    constructor(context: ctx.AppContext, model: string) {
+        this.context = context;
+        this.model = model;
     }
 
 
-    //private __dm: breeze.EntityManager;
-    //get datasource(): breeze.EntityManager {
+    private __dm: breeze.EntityManager;
+    get datasource(): breeze.EntityManager {
 
-    //    if (!this.__dm) {
-    //        this.__dm = new breeze.EntityManager({
-    //            dataService: new breeze.DataService({
-    //                serviceName: this.model,
-    //                hasServerMetadata: false
-    //            })
-    //        });
-    //        this.__dm.metadataStore.importMetadata(Store.ModelStore.exportMetadata());
-    //    }
-    //    return this.__dm;
-    //}
-
-
-    //private __fill_entityManager(data: any[]) {
-
-    //    var that = this;
-
-    //    data.forEach(e => {
-
-    //        this.datasource.createEntity(this.model, e, breeze.EntityState.Unchanged, breeze.MergeStrategy.OverwriteChanges);
-    //    });
-    //}
+        if (!this.__dm) {
+            this.__dm = new breeze.EntityManager({
+                dataService: new breeze.DataService({
+                    serviceName: this.model,
+                    hasServerMetadata: false
+                })
+            });
+            this.__dm.metadataStore.importMetadata(store.ModelStore.exportMetadata());
+        }
+        return this.__dm;
+    }
 
 
-    //private __execQuery(query: breeze.EntityQuery): Q.Promise<any> {
+    private __fill_entityManager(data: any[]) {
 
-    //    var d = Q.defer<any>();
+        var that = this;
 
+        data.forEach(e => {
 
-    //    var qry = new sequel_query(this.context.conn, query);
-
-
-    //    qry.execute().then(rst => {
-    //        d.resolve(rst);
-    //    });
+            this.datasource.createEntity(this.model, e, breeze.EntityState.Unchanged, breeze.MergeStrategy.OverwriteChanges);
+        });
+    }
 
 
-    //    return d.promise;
-    //}
+    private __execQuery(query: breeze.EntityQuery): Q.Promise<any> {
+
+        var d = Q.defer<any>();
 
 
-    //fetch(query: breeze.EntityQuery): Q.Promise<any[]> {
-
-    //    var d = Q.defer<any[]>();
-
-    //    this.__execQuery(query).then(result => {
-
-    //        if (result) {
-    //            this.__fill_entityManager(result);
-    //        }
-
-    //        d.resolve(result);
-
-    //    });
-
-    //    return d.promise;
-
-    //}
+        var qry = new sequel_query(this.context.conn, query);
 
 
-    //internal_exec_sql(sql: string): Q.Promise<any[]> {
-
-    //    var d = Q.defer<any[]>();
-
-    //    this.context.conn.sequelize.query(sql, { type: __sequel.QueryTypes.SELECT }).then((list: any[]) => {
-    //        d.resolve(list);
-    //    });
-
-    //    return d.promise;
-    //}
+        qry.execute().then(rst => {
+            d.resolve(rst);
+        });
 
 
-
-    //exec_sql(input: any): Q.Promise<any[]> {
-
-    //    return this.internal_exec_sql(input.sql);
-
-    //}
+        return d.promise;
+    }
 
 
-    //private __saveChanges(saveBundle: any): Q.Promise<any> {
+    fetch(query: breeze.EntityQuery): Q.Promise<any[]> {
 
-    //    var d = Q.defer<any>();
+        var d = Q.defer<any[]>();
 
-    //    sequel_save.save(this.context.conn, {
-    //        body: {
-    //            entities: JSON.parse(saveBundle).entities
-    //        }
-    //    }).then(() => {
+        this.__execQuery(query).then(result => {
 
-    //        d.resolve(true);
+            if (result) {
+                this.__fill_entityManager(result);
+            }
 
-    //    }).catch((err) => {
+            d.resolve(result);
 
-    //        d.reject(err.message)
-    //    });
+        });
 
-    //    return d.promise;
+        return d.promise;
 
-    //}
+    }
+
+
+    internal_exec_sql(sql: string): Q.Promise<any[]> {
+
+        var d = Q.defer<any[]>();
+
+        this.context.conn.sequelize.query(sql, { type: __sequel.QueryTypes.SELECT }).then((list: any[]) => {
+            d.resolve(list);
+        });
+
+        return d.promise;
+    }
 
 
 
-    //savechanges(data: string): Q.Promise<any> {
+    exec_sql(input: any): Q.Promise<any[]> {
 
-    //    this.datasource.importEntities(data, { mergeStrategy: breeze.MergeStrategy.OverwriteChanges });
+        return this.internal_exec_sql(input.sql);
 
-    //    return this.do_savechanges();
-    //}
-
+    }
 
 
-    //do_savechanges(): Q.Promise<any> {
+    private __saveChanges(saveBundle: any): Q.Promise<any> {
 
-    //    var dataservice: any = br_sequel.breeze.config.getAdapterInstance('dataService');
+        var d = Q.defer<any>();
 
-    //    var savecontext = {
-    //        entityManager: this.datasource,
-    //        dataService: dataservice,
-    //        resourceName: this.model
-    //    }
+        sequel_save.save(this.context.conn, {
+            body: {
+                entities: JSON.parse(saveBundle).entities
+            }
+        }).then(() => {
+
+            d.resolve(true);
+
+        }).catch((err) => {
+
+            d.reject(err.message)
+        });
+
+        return d.promise;
+
+    }
 
 
-    //    var bundle = { entities: this.datasource.getEntities(), saveOptions: {} };
+
+    savechanges(data: string): Q.Promise<any> {
+
+        this.datasource.importEntities(data, { mergeStrategy: breeze.MergeStrategy.OverwriteChanges });
+
+        return this.do_savechanges();
+    }
 
 
-    //    var saveBundle = dataservice.saveChanges(savecontext, bundle);
+
+    do_savechanges(): Q.Promise<any> {
+
+        var dataservice: any = br_sequel.breeze.config.getAdapterInstance('dataService');
+
+        var savecontext = {
+            entityManager: this.datasource,
+            dataService: dataservice,
+            resourceName: this.model
+        }
 
 
-    //    return this.__saveChanges(saveBundle);
+        var bundle = { entities: this.datasource.getEntities(), saveOptions: {} };
 
-    //}
+
+        var saveBundle = dataservice.saveChanges(savecontext, bundle);
+
+
+        return this.__saveChanges(saveBundle);
+
+    }
 }

@@ -53,6 +53,7 @@
     <Compile Include="server\breeze_sequel\SequelizeSaveHandler.js" />
     <Compile Include="server\breeze_sequel\sequelizeUtils.js" />
     <Compile Include="server\breeze_sequel\utils.js" />
+    <Compile Include="server\datastore\meta.js" />
     <Compile Include="tasks\pipeline.js" />
     <Content Include="views\403.ejs" />
     <Content Include="views\404.ejs" />
@@ -134,6 +135,7 @@
     <Folder Include="views" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="api\models\item.ts" />
     <TypeScriptCompile Include="server\lib\appcontext.ts" />
     <TypeScriptCompile Include="server\datastore\store.ts" />
     <TypeScriptCompile Include="server\dispatcher.ts" />

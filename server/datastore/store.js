@@ -1,7 +1,7 @@
 /// <reference path="../../typings/tsd.d.ts" />
 "use strict";
 var root = require('root-path');
-var metadata = require(root('/server/init/meta'));
+var metadata = require(root('/server/datastore/meta'));
 var breeze_sequel = require(root('/server/breeze_sequel/main'));
 var breeze = require('breeze-client');
 var _ = require('lodash');
