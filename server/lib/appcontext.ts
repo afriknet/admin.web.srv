@@ -40,11 +40,5 @@ function open_db_connection() {
     conn = new s_mgr(__con, {
         host:'mysql5014.smarterasp.net'
     });
-
-    conn.importMetadata(store.ModelStore.exportMetadata());
-
-    //conn.sequelize.query("select * from item", { type: sqlize.QueryTypes.SELECT }).then(list => {
-    //    var d = list;
-    //});
-
+    
 }
