@@ -7,11 +7,12 @@ var breeze = require('breeze-client');
 function test(req, res) {
     var app_ctx = new ctx.AppContext();
     var s = new ds.DataService(app_ctx, 'item');
-    var qry = new breeze.EntityQuery({ where: { id: 'aaa' } });
+    var qry = breeze.EntityQuery.from('item'); //.where('id', 'eq', 'dhfgdfadklgfl');
     s.fetch(qry).then(function (data) {
+        var list = s.datasource.getEntities('item');
+        res.send(list);
     }).fail(function (err) {
     });
-    res.send('test');
 }
 exports.test = test;
 //# sourceMappingURL=dispatcher.js.map

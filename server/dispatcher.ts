@@ -13,15 +13,17 @@ export function test(req: express.Request, res: express.Response) {
 
     var s: ds.DataService = new ds.DataService(app_ctx, 'item');
 
-    var qry = new breeze.EntityQuery({ where: { id: 'aaa' } });
+    var qry = breeze.EntityQuery.from('item');//.where('id', 'eq', 'dhfgdfadklgfl');
 
     s.fetch(qry).then(data => {
+
+        var list = s.datasource.getEntities('item');
+
+        res.send(list);
 
     }).fail(err => {
 
 
     });
     
-    res.send('test');
-
 }
