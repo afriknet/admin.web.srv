@@ -77,6 +77,10 @@ function fetch_data(req: express.Request, res: express.Response, next: any) {
 
     var qry = new breeze.EntityQuery(__qry);
 
+    var query = new breeze.EntityQuery({
+        from: qry.resourceName, __qry
+    });
+
     var _ctx = new ctx.AppContext();
 
     var srv = new dal.DataService(_ctx, qry.resourceName);
