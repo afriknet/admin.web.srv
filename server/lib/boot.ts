@@ -35,9 +35,9 @@ export function init_datastore() {
 
     __ctx.conn.importMetadata(store.ModelStore.exportMetadata());
 
-    __ctx.conn.sequelize.query("select * from item", { type: __sequel.QueryTypes.SELECT }).then(list => {
-        var d = list;
-    });
+    //__ctx.conn.sequelize.query("select * from occp", { type: __sequel.QueryTypes.SELECT }).then(list => {
+    //    var d = list;
+    //});
 
 
 }

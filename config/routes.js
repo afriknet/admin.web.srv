@@ -36,6 +36,8 @@ module.exports.routes = {
     view: 'homepage'
   },
 
+  'get /api/test': 'DispatchController.test',
+
   'post /api/data': 'DispatchController.fetch_data',
   'get /api/data': 'DispatchController.fetch_data',
 

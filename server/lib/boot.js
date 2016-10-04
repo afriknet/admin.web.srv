@@ -22,9 +22,9 @@ exports.load_models = load_models;
 function init_datastore() {
     var __ctx = new ctx.AppContext();
     __ctx.conn.importMetadata(store.ModelStore.exportMetadata());
-    __ctx.conn.sequelize.query("select * from item", { type: __sequel.QueryTypes.SELECT }).then(function (list) {
-        var d = list;
-    });
+    //__ctx.conn.sequelize.query("select * from occp", { type: __sequel.QueryTypes.SELECT }).then(list => {
+    //    var d = list;
+    //});
 }
 exports.init_datastore = init_datastore;
 //# sourceMappingURL=boot.js.map

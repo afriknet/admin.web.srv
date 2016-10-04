@@ -102,19 +102,19 @@ export function test(req: express.Request, res: express.Response) {
 
     var app_ctx = new ctx.AppContext();
 
-    var s: ds.DataService = new ds.DataService(app_ctx, 'item');
+    var s: ds.DataService = new ds.DataService(app_ctx, 'occp');
 
-    var qry = breeze.EntityQuery.from('item');//.where('id', 'eq', 'dhfgdfadklgfl');
+    var qry = breeze.EntityQuery.from('occp').where('ID', 'eq', '00031847-D980-41E5-A39D-F5ABFCF0A5E2');
 
     s.fetch(qry).then(data => {
 
-        var list = s.datasource.getEntities('item');
+        var list = s.datasource.getEntities('occp');
 
-        res.send(list);
+        res.send(list.length);
 
     }).fail(err => {
 
-
+        res.send(JSON.stringify(err));
     });
     
 }

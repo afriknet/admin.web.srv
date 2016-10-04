@@ -14,6 +14,7 @@ var sqlize = require('sequelize');
 import store = require('../datastore/store');
 var con = require(root('/config/connections'));
 var mysql = con.connections.local_mysql;
+var mssql = con.connections.mssql_connection;
 var conn = null;// boot.start_db(null);
 
 
@@ -31,14 +32,16 @@ export class AppContext {
 
 function open_db_connection() {
     
-    var __con = {
-        dbName: mysql.database,
-        user: mysql.user,
-        password: mysql.password
-    }
+    //var __con = {
+    //    dbName: mysql.database,
+    //    user: mysql.user,
+    //    password: mysql.password
+    //}
 
-    conn = new s_mgr(__con, {
-        host:'mysql5014.smarterasp.net'
-    });
+    //conn = new s_mgr(__con, {
+    //    host:'mysql5014.smarterasp.net'
+    //});
+
+    conn = new s_mgr(mssql.config, mssql.extra);
     
 }

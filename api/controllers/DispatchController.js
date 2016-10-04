@@ -15,6 +15,12 @@ module.exports = {
         dispatcher.dispatch_call(dispatcher.operationtype.metadata, req, res);
     },
 
+
+    test: function (req, res) {
+
+        dispatcher.test(req, res);
+    }
+
 };
 
 //module.exports = {
