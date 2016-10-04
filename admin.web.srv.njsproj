@@ -147,6 +147,7 @@
     <TypeScriptCompile Include="server\lib\dataservice.ts" />
     <TypeScriptCompile Include="server\lib\utils.ts" />
     <TypeScriptCompile Include="server\models\occp.ts" />
+    <TypeScriptCompile Include="server\models\prof.ts" />
     <TypeScriptCompile Include="typings\breeze\breeze.d.ts" />
     <TypeScriptCompile Include="typings\express\express.d.ts" />
     <TypeScriptCompile Include="typings\formidable\formidable.d.ts" />
