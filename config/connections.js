@@ -40,12 +40,28 @@ module.exports.connections = {
   * Run: npm install sails-mysql                                             *
   *                                                                          *
   ***************************************************************************/
-  local_mysql: {
+  mysql_connection: {
     adapter: 'sails-mysql',
     host: 'mysql5014.smarterasp.net',
     user: '9e3241_mysql',
     password: 'JazzTheSoul1.',
     database: 'db_9e3241_mysql'
+  },
+
+  mssql_connection: {
+
+      config: {
+          dbName: 'DB_9E3241_seyaobey',
+          user: 'DB_9E3241_seyaobey_admin',
+          password: 'JazzTheSoul1.'
+      },
+      extra: {
+          host: 'SQL5017.Smarterasp.net',
+          dialect: 'mssql',
+          dialectOptions: {
+              //instanceName: 'SQL5017.Smarterasp.net'
+          }
+      }
   },
 
   /***************************************************************************

@@ -13,7 +13,8 @@ var sqlize = require('sequelize');
 
 import store = require('../datastore/store');
 var con = require(root('/config/connections'));
-var mysql = con.connections.local_mysql;
+var mysql = con.connections.mysql_connection;
+var mssql = con.connections.mssql_connection;
 var conn = null;// boot.start_db(null);
 
 
@@ -37,14 +38,17 @@ function open_db_connection() {
         password: mysql.password
     }
 
-    conn = new s_mgr(__con, {
-        host:'mysql5014.smarterasp.net'
-    });
-
-    conn.importMetadata(store.ModelStore.exportMetadata());
-
-    //conn.sequelize.query("select * from item", { type: sqlize.QueryTypes.SELECT }).then(list => {
-    //    var d = list;
+    //conn = new s_mgr(__con, {
+    //    host: 'mysql5014.smarterasp.net',
+    //    port: 3306
     //});
+
+    conn = new s_mgr(mssql.config, mssql.extra);
+
+    //conn.importMetadata(store.ModelStore.exportMetadata());
+
+    conn.sequelize.query("select * from occp", { type: sqlize.QueryTypes.SELECT }).then(list => {
+        var d = list;
+    });
 
 }
