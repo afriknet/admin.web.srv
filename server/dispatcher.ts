@@ -106,9 +106,9 @@ export function test(req: express.Request, res: express.Response) {
 
     var app_ctx = new ctx.AppContext();
 
-    var s: ds.DataService = new ds.DataService(app_ctx, 'occp');
+    var s: ds.DataService = new ds.DataService(app_ctx, 'prof');
 
-    var qry = breeze.EntityQuery.from('occp').where('ID', 'eq', '00031847-D980-41E5-A39D-F5ABFCF0A5E2');
+    var qry = breeze.EntityQuery.from('prof');
 
     s.fetch(qry).then(data => {
 
