@@ -3,11 +3,12 @@
 /// <reference path="lib/dataservice.ts" />
 /// <reference path="datastore/store.ts" />
 "use strict";
-const ds = require('./lib/dataservice');
-const ctx = require('./lib/appcontext');
-const breeze = require('breeze-client');
-const dal = require('./lib/dataservice');
-const store = require('./datastore/store');
+var ds = require('./lib/dataservice');
+var ctx = require('./lib/appcontext');
+var breeze = require('breeze-client');
+var dal = require('./lib/dataservice');
+var store = require('./datastore/store');
+var f = require('string-format');
 function sendResponse(data, res) {
     res.send(data);
 }
@@ -32,7 +33,7 @@ function dispatch_call(operation, req, res, next) {
 exports.dispatch_call = dispatch_call;
 function format_qry(qry) {
     var str_qry = JSON.stringify(qry);
-    return JSON.parse(str_qry, (key, val) => {
+    return JSON.parse(str_qry, function (key, val) {
         if (val === '___NULL___') {
             return null;
         }
@@ -47,7 +48,7 @@ function fetch_data(req, res, next) {
     });
     var _ctx = new ctx.AppContext();
     var srv = new dal.DataService(_ctx, qry.resourceName);
-    srv.fetch(qry).then(rst => {
+    srv.fetch(qry).then(function (rst) {
         var response = {
             payload: srv.datasource.exportEntities()
         };
@@ -61,10 +62,10 @@ function test(req, res) {
     var app_ctx = new ctx.AppContext();
     var s = new ds.DataService(app_ctx, 'prof');
     var qry = breeze.EntityQuery.from('prof');
-    s.fetch(qry).then(data => {
-        var list = s.datasource.getEntities('occp');
-        res.send(list.length);
-    }).fail(err => {
+    s.fetch(qry).then(function (data) {
+        var list = s.datasource.getEntities('prof');
+        res.send(f("count: {0}", list.length));
+    }).fail(function (err) {
         res.send(JSON.stringify(err));
     });
 }

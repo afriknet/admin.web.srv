@@ -11,6 +11,7 @@ import Q = require('q');
 import _ = require('lodash');
 import dal = require('./lib/dataservice');
 import store = require('./datastore/store');
+var f = require('string-format')
 
 //import FileUploader = require('./lib/fileupload');
 //import localDB = require('./local/localdb');
@@ -112,9 +113,9 @@ export function test(req: express.Request, res: express.Response) {
 
     s.fetch(qry).then(data => {
 
-        var list = s.datasource.getEntities('occp');
+        var list = s.datasource.getEntities('prof');
 
-        res.send(list.length);
+        res.send(f("count: {0}", list.length));
 
     }).fail(err => {
 
