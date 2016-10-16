@@ -37,6 +37,9 @@ function format_qry(qry) {
         if (val === '___NULL___') {
             return null;
         }
+        if (key === 'takeCount') {
+            return parseInt(val);
+        }
         return val;
     });
 }

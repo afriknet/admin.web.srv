@@ -14,5 +14,13 @@ module.exports = function () {
             OCCPPARENTID: { dataType: breeze.DataType.String, isNullable: true }
         }
     });
+    store.add_to_Store({
+        defaultResourceName: 'acts',
+        dataProperties: {
+            ID: { dataType: breeze.DataType.String, isPartOfKey: true },
+            ACTSDESCR_EN: { dataType: breeze.DataType.String },
+            ACTSISCO: { dataType: breeze.DataType.String },
+        }
+    });
 };
 //# sourceMappingURL=occp.js.map

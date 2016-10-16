@@ -18,4 +18,13 @@ module.exports = function () {
     });
 
 
+    store.add_to_Store({
+        defaultResourceName: 'acts',
+        dataProperties: {
+            ID: { dataType: breeze.DataType.String, isPartOfKey: true },
+            ACTSDESCR_EN: { dataType: breeze.DataType.String },            
+            ACTSISCO: { dataType: breeze.DataType.String },            
+        }
+    });
+
 }

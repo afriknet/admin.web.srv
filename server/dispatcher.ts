@@ -66,6 +66,10 @@ function format_qry(qry: any) {
             return null;
         }
 
+        if (key === 'takeCount') {
+            return parseInt(val);
+        }
+
         return val;
     });
 
