@@ -52,8 +52,12 @@ var DataService = (function () {
         var _this = this;
         var d = Q.defer();
         this.__execQuery(query).then(function (result) {
+            var __results = result;
+            if (result['results']) {
+                __results = result['results'];
+            }
             if (result) {
-                _this.__fill_entityManager(result);
+                _this.__fill_entityManager(__results);
             }
             d.resolve(result);
         });

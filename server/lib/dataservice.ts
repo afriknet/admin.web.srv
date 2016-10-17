@@ -81,8 +81,14 @@ export class DataService {
 
         this.__execQuery(query).then(result => {
 
+            var __results = result;
+
+            if (result['results']) {
+                __results = result['results'];
+            }
+
             if (result) {
-                this.__fill_entityManager(result);
+                this.__fill_entityManager(__results);
             }
 
             d.resolve(result);
