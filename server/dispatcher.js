@@ -15,6 +15,7 @@ function sendResponse(data, res) {
 exports.operationtype = {
     fetch: 'fetch',
     metadata: 'metadata',
+    raw: 'raw'
 };
 function dispatch_call(operation, req, res, next) {
     switch (operation) {
@@ -28,6 +29,11 @@ function dispatch_call(operation, req, res, next) {
                 fetch_data(req, res, next);
             }
             break;
+        case exports.operationtype.raw:
+            {
+                raw(req, res, next);
+            }
+            break;
     }
 }
 exports.dispatch_call = dispatch_call;
@@ -37,7 +43,7 @@ function format_qry(qry) {
         if (val === '___NULL___') {
             return null;
         }
-        if (key === 'takeCount') {
+        if (key === 'take') {
             return parseInt(val);
         }
         return val;
@@ -45,11 +51,8 @@ function format_qry(qry) {
 }
 function fetch_data(req, res, next) {
     var __qry = format_qry(req.body);
-    var qry = new breeze.EntityQuery(__qry);
-    var query = new breeze.EntityQuery({
-        from: qry.resourceName, __qry: __qry
-    });
     var _ctx = new ctx.AppContext();
+    var qry = new breeze.EntityQuery(__qry);
     var srv = new dal.DataService(_ctx, qry.resourceName);
     srv.fetch(qry).then(function (rst) {
         var response = {
@@ -60,6 +63,17 @@ function fetch_data(req, res, next) {
 }
 function fetch_metadata(req, res, next) {
     res.send(store.ModelStore.exportMetadata());
+}
+function raw(req, res, next) {
+    var _ctx = new ctx.AppContext();
+    var srv = new dal.DataService(_ctx, req.body['service']);
+    srv.exec_sql({
+        sql: req.body['sql']
+    }).then(function (data) {
+        res.send(data);
+    }).fail(function (err) {
+        res.status(500).send(JSON.stringify(err));
+    });
 }
 function test(req, res) {
     var app_ctx = new ctx.AppContext();

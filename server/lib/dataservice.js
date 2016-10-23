@@ -63,7 +63,7 @@ var DataService = (function () {
         });
         return d.promise;
     };
-    DataService.prototype.internal_exec_sql = function (sql) {
+    DataService.prototype.exec_raw_sql = function (sql) {
         var d = Q.defer();
         this.context.conn.sequelize.query(sql, { type: __sequel.QueryTypes.SELECT }).then(function (list) {
             d.resolve(list);
@@ -71,7 +71,7 @@ var DataService = (function () {
         return d.promise;
     };
     DataService.prototype.exec_sql = function (input) {
-        return this.internal_exec_sql(input.sql);
+        return this.exec_raw_sql(input.sql);
     };
     DataService.prototype.__saveChanges = function (saveBundle) {
         var d = Q.defer();

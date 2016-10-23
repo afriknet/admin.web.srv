@@ -100,7 +100,7 @@ export class DataService {
     }
 
 
-    internal_exec_sql(sql: string): Q.Promise<any[]> {
+    private exec_raw_sql(sql: string): Q.Promise<any[]> {
 
         var d = Q.defer<any[]>();
 
@@ -111,11 +111,10 @@ export class DataService {
         return d.promise;
     }
 
-
-
+    
     exec_sql(input: any): Q.Promise<any[]> {
 
-        return this.internal_exec_sql(input.sql);
+        return this.exec_raw_sql(input.sql);
 
     }
 

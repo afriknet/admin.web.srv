@@ -119,6 +119,7 @@
     <Folder Include="server\lib\" />
     <Folder Include="server\datastore\" />
     <Folder Include="server\models\" />
+    <Folder Include="server\services\" />
     <Folder Include="tasks" />
     <Folder Include="tasks\config" />
     <Folder Include="tasks\register" />
@@ -148,6 +149,7 @@
     <TypeScriptCompile Include="server\lib\utils.ts" />
     <TypeScriptCompile Include="server\models\occp.ts" />
     <TypeScriptCompile Include="server\models\prof.ts" />
+    <TypeScriptCompile Include="server\services\skls.ts" />
     <TypeScriptCompile Include="typings\breeze\breeze.d.ts" />
     <TypeScriptCompile Include="typings\express\express.d.ts" />
     <TypeScriptCompile Include="typings\formidable\formidable.d.ts" />

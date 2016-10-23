@@ -37,9 +37,7 @@ export function init_datastore() {
 
     //__ctx.conn.sequelize.query("select * from occp", { type: __sequel.QueryTypes.SELECT }).then(list => {
     //    var d = list;
-    //});
-
-
+    //});    
 }
 
 

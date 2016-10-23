@@ -16,16 +16,9 @@ module.exports = {
     },
 
 
-    test: function (req, res) {
+    raw: function (req, res) {
         
-        dispatcher.test(req, res);
+        dispatcher.dispatch_call(dispatcher.operationtype.raw,req, res);
     }
 
 };
-
-//module.exports = {
-
-//    test: function (req, res) {
-//        dispatcher.test(req, res);
-//    }    
-//};

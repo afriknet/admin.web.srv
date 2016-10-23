@@ -35,14 +35,15 @@ module.exports.routes = {
   '/': {
     view: 'homepage'
   },
-
-  'get /api/test': 'DispatchController.test',
-
+    
   'post /api/data': 'DispatchController.fetch_data',
   'get /api/data': 'DispatchController.fetch_data',
 
   'post /api/Metadata': 'DispatchController.fetch_metadata',
-  'get /api/Metadata': 'DispatchController.fetch_metadata'
+  'get /api/Metadata': 'DispatchController.fetch_metadata',
+
+  'post /api/raw': 'DispatchController.raw',
+  'get /api/raw': 'DispatchController.raw'
 
   /***************************************************************************
   *                                                                          *
