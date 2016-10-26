@@ -43,7 +43,11 @@ module.exports.routes = {
   'get /api/Metadata': 'DispatchController.fetch_metadata',
 
   'post /api/raw': 'DispatchController.raw',
-  'get /api/raw': 'DispatchController.raw'
+  'get /api/raw': 'DispatchController.raw',
+
+
+  'post /api/SaveChanges': 'DispatchController.save',
+  'get /api/SaveChanges': 'DispatchController.save'
 
   /***************************************************************************
   *                                                                          *

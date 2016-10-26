@@ -15,7 +15,8 @@ function sendResponse(data, res) {
 exports.operationtype = {
     fetch: 'fetch',
     metadata: 'metadata',
-    raw: 'raw'
+    raw: 'raw',
+    save: 'save'
 };
 function dispatch_call(operation, req, res, next) {
     switch (operation) {
@@ -32,6 +33,11 @@ function dispatch_call(operation, req, res, next) {
         case exports.operationtype.raw:
             {
                 raw(req, res, next);
+            }
+            break;
+        case exports.operationtype.save:
+            {
+                save_changes(req, res, next);
             }
             break;
     }
@@ -59,10 +65,24 @@ function fetch_data(req, res, next) {
             payload: srv.datasource.exportEntities()
         };
         res.send(response);
+    }).fail(function (err) {
+        res.status(500).send(JSON.stringify(err));
     });
 }
 function fetch_metadata(req, res, next) {
     res.send(store.ModelStore.exportMetadata());
+}
+function save_changes(req, res, next) {
+    var _ctx = new ctx.AppContext();
+    var srv = new dal.DataService(_ctx, req.body['service']);
+    srv.savechanges(req.body['entities']).then(function (rst) {
+        var response = {
+            payload: rst
+        };
+        res.send(response);
+    }).fail(function (err) {
+        res.status(500).send(JSON.stringify(err));
+    });
 }
 function raw(req, res, next) {
     var _ctx = new ctx.AppContext();

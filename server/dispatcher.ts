@@ -34,7 +34,8 @@ function sendResponse(data: srvCallResult, res: express.Response) {
 export var operationtype = {
     fetch: 'fetch',
     metadata: 'metadata',
-    raw:'raw'
+    raw: 'raw',
+    save:'save'
 }
 
 
@@ -58,6 +59,13 @@ export function dispatch_call(operation: string, req: express.Request, res: expr
         case operationtype.raw: {
 
             raw(req, res, next);
+
+        } break;
+
+
+        case operationtype.save: {
+
+            save_changes(req, res, next);
 
         } break;
     }
@@ -102,6 +110,10 @@ function fetch_data(req: express.Request, res: express.Response, next: any) {
         }
 
         res.send(response);
+    }).fail(err => {
+
+        res.status(500).send(JSON.stringify(err));
+
     });
 }
 
@@ -109,6 +121,29 @@ function fetch_data(req: express.Request, res: express.Response, next: any) {
 function fetch_metadata(req: express.Request, res: express.Response, next: any) {
 
     res.send(store.ModelStore.exportMetadata());
+}
+
+
+function save_changes(req: express.Request, res: express.Response, next: any) {
+
+    var _ctx = new ctx.AppContext();
+
+    var srv = new dal.DataService(_ctx, req.body['service']);
+
+    srv.savechanges(req.body['entities']).then(rst => {
+
+        var response = {
+            payload: rst
+        }
+
+        res.send(response);
+
+    }).fail(err => {
+
+        res.status(500).send(JSON.stringify(err));
+
+    });
+
 }
 
 
