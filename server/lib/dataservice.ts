@@ -51,9 +51,10 @@ export class DataService {
 
         var that = this;
 
-        data.forEach(e => {
+        data.forEach(entity => {
 
-            this.datasource.createEntity(this.model, e, breeze.EntityState.Unchanged, breeze.MergeStrategy.OverwriteChanges);
+            this.datasource.createEntity(this.model, entity, breeze.EntityState.Unchanged, breeze.MergeStrategy.OverwriteChanges);
+
         });
     }
 

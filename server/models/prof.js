@@ -36,6 +36,13 @@ module.exports = function () {
             OCCPID: { dataType: breeze.DataType.String },
             ACTSID: { dataType: breeze.DataType.String },
             PROAWEIGHT: { dataType: breeze.DataType.String }
+        },
+        navigationProperties: {
+            item: {
+                type: "prof",
+                assoc: "rel_prof_proa",
+                foreignKeyNames: ["PROFID"]
+            }
         }
     });
     store.add_to_Store({
@@ -46,6 +53,13 @@ module.exports = function () {
             OCCPID: { dataType: breeze.DataType.String },
             SKLSID: { dataType: breeze.DataType.String },
             PROSWEIGHT: { dataType: breeze.DataType.String }
+        },
+        navigationProperties: {
+            item: {
+                type: "prof",
+                assoc: "rel_prof_proa",
+                foreignKeyNames: ["PROFID"]
+            }
         }
     });
 };

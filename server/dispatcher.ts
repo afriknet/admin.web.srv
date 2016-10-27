@@ -11,7 +11,7 @@ import Q = require('q');
 import _ = require('lodash');
 import dal = require('./lib/dataservice');
 import store = require('./datastore/store');
-var f = require('string-format')
+var f = require('string-format');
 
 //import FileUploader = require('./lib/fileupload');
 //import localDB = require('./local/localdb');
@@ -95,6 +95,7 @@ function format_qry(qry: any) {
 
 function fetch_data(req: express.Request, res: express.Response, next: any) {
 
+    
     var __qry: any = format_qry(req.body);
     
     var _ctx = new ctx.AppContext();
@@ -103,13 +104,14 @@ function fetch_data(req: express.Request, res: express.Response, next: any) {
 
     var srv = new dal.DataService(_ctx, qry.resourceName);
 
-    srv.fetch(qry).then(rst => {
+    srv.fetch(qry).then(data => {
 
-        var response = {
-            payload: srv.datasource.exportEntities()
+        var rsp = {
+            payload: srv.datasource.exportEntities() 
         }
 
-        res.send(response);
+        res.send(rsp);
+
     }).fail(err => {
 
         res.status(500).send(JSON.stringify(err));
