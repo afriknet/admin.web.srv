@@ -57,7 +57,7 @@ module.exports = function () {
         navigationProperties: {
             item: {
                 type: "prof",
-                assoc: "rel_prof_proa",
+                assoc: "rel_prof_pros",
                 foreignKeyNames: ["PROFID"]
             }
         }
