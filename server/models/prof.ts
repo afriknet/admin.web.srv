@@ -76,7 +76,7 @@ module.exports = function () {
         defaultResourceName: 'comp',
         dataProperties: {
             ID: { dataType: breeze.DataType.String, isPartOfKey: true },
-            COMPANYNAME: { dataType: breeze.DataType.String },
+            COMPNAME: { dataType: breeze.DataType.String },
             COMPEMAIL: { dataType: breeze.DataType.String },
             COMPCOUNTRY: { dataType: breeze.DataType.String },
             COMPADDRESS: { dataType: breeze.DataType.String },
