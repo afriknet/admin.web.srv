@@ -69,8 +69,8 @@ module.exports = function () {
             COMPANYNAME: { dataType: breeze.DataType.String },
             COMPEMAIL: { dataType: breeze.DataType.String },
             COMPCOUNTRY: { dataType: breeze.DataType.String },
-            COMPANYADDRESS: { dataType: breeze.DataType.String },
-            COMPANYPASSWORD: { dataType: breeze.DataType.String }
+            COMPADDRESS: { dataType: breeze.DataType.String },
+            COMPPASSWORD: { dataType: breeze.DataType.String }
         }
     });
 };
