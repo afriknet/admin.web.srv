@@ -36,8 +36,8 @@ var DataService = (function () {
     DataService.prototype.__fill_entityManager = function (data) {
         var _this = this;
         var that = this;
-        data.forEach(function (e) {
-            _this.datasource.createEntity(_this.model, e, breeze.EntityState.Unchanged, breeze.MergeStrategy.OverwriteChanges);
+        data.forEach(function (entity) {
+            _this.datasource.createEntity(_this.model, entity, breeze.EntityState.Unchanged, breeze.MergeStrategy.OverwriteChanges);
         });
     };
     DataService.prototype.__execQuery = function (query) {

@@ -60,11 +60,11 @@ function fetch_data(req, res, next) {
     var _ctx = new ctx.AppContext();
     var qry = new breeze.EntityQuery(__qry);
     var srv = new dal.DataService(_ctx, qry.resourceName);
-    srv.fetch(qry).then(function (rst) {
-        var response = {
+    srv.fetch(qry).then(function (data) {
+        var rsp = {
             payload: srv.datasource.exportEntities()
         };
-        res.send(response);
+        res.send(rsp);
     }).fail(function (err) {
         res.status(500).send(JSON.stringify(err));
     });
