@@ -56,4 +56,17 @@ module.exports = function () {
             PROSWEIGHT: { dataType: breeze.DataType.String }
         }
     });
+
+
+    store.add_to_Store({
+        defaultResourceName: 'comp',
+        dataProperties: {
+            ID: { dataType: breeze.DataType.String, isPartOfKey: true },
+            COMPANYNAME: { dataType: breeze.DataType.String },
+            COMPEMAIL: { dataType: breeze.DataType.String },
+            COMPCOUNTRY: { dataType: breeze.DataType.String },
+            COMPANYADDRESS: { dataType: breeze.DataType.String },
+            COMPANYPASSWORD: { dataType: breeze.DataType.String }
+        }
+    });
 }
