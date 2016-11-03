@@ -35,7 +35,8 @@ export var operationtype = {
     fetch: 'fetch',
     metadata: 'metadata',
     raw: 'raw',
-    save:'save'
+    save: 'save',
+    call: 'call'
 }
 
 
@@ -68,6 +69,10 @@ export function dispatch_call(operation: string, req: express.Request, res: expr
             save_changes(req, res, next);
 
         } break;
+            
+        case operationtype.call: {
+
+        } break;
     }
 }
 
@@ -92,10 +97,8 @@ function format_qry(qry: any) {
 }
 
 
-
 function fetch_data(req: express.Request, res: express.Response, next: any) {
-
-    
+        
     var __qry: any = format_qry(req.body);
     
     var _ctx = new ctx.AppContext();
@@ -149,7 +152,6 @@ function save_changes(req: express.Request, res: express.Response, next: any) {
 }
 
 
-
 function raw(req: express.Request, res: express.Response, next: any) {
 
     var _ctx = new ctx.AppContext();
@@ -171,6 +173,11 @@ function raw(req: express.Request, res: express.Response, next: any) {
     
 }
 
+
+
+function call(req: express.Request, res: express.Response, next: any) {
+
+}
 
 
 export function test(req: express.Request, res: express.Response) {

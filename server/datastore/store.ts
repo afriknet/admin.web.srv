@@ -124,36 +124,6 @@ export function add_to_Store(entity_type: EntityTypeDefinition) {
 }
 
 
-//export var exportSchema = function (srvName: string): string {
-
-//    var _store = _.find(dbSchema, s => s.srvName === srvName);
-
-//    return _store ? _store.store.exportMetadata() : null;
-//}
-
-
-//export class DataStore {
-
-//    private _store: breeze.MetadataStore;
-//    private _storeName: string;
-
-//    constructor(_storeName: string) {
-//        this._storeName = _storeName;
-//        this._store = __createDataStore(_storeName);
-//    }
-
-
-//    addEntityType(type: EntityTypeDefinition) {
-//        __addEntityType(this._store, type);
-//    }
-
-
-//    registerSchema() {
-//        __regsiterSchema(this._storeName, this._store);
-//    }
-
-//}
-
 
 
 

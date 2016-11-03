@@ -25,6 +25,11 @@ module.exports = {
     save: function (req, res) {
 
         dispatcher.dispatch_call(dispatcher.operationtype.save, req, res);
+    },
+
+    call: function (req, res) {
+
+        dispatcher.dispatch_call(dispatcher.operationtype.save, req, res);
     }
 
 };

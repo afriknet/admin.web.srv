@@ -47,7 +47,11 @@ module.exports.routes = {
 
 
   'post /api/SaveChanges': 'DispatchController.save',
-  'get /api/SaveChanges': 'DispatchController.save'
+  'get /api/SaveChanges': 'DispatchController.save',
+
+
+  'post /api/call': 'DispatchController.call',
+  'get /api/call': 'DispatchController.call'
 
   /***************************************************************************
   *                                                                          *
