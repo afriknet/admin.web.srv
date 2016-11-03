@@ -29,6 +29,29 @@ export function load_models() {
 }
 
 
+
+export function load_services() {
+
+    var files: string[] = fs.readdirSync(root('/server/services'));
+
+    _.each(files, fn => {
+
+        var ext = path.extname(fn);
+
+        if (ext === '.js') {
+
+            var model = require(root('/server/models/' + fn));
+
+            if (_.isFunction(model)) {
+                model();
+            }
+        }
+    });    
+
+}
+
+
+
 export function init_datastore() {
 
     var __ctx = new ctx.AppContext();

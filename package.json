@@ -9,6 +9,7 @@
     "breeze-client": "^1.5.13",
     "breeze-serverside": "0.0.1",
     "ejs": "2.3.4",
+    "file-exists": "^2.0.0",
     "fs": "0.0.1-security",
     "grunt": "0.4.5",
     "grunt-contrib-clean": "0.6.0",

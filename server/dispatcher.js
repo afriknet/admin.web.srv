@@ -3,12 +3,13 @@
 /// <reference path="lib/dataservice.ts" />
 /// <reference path="datastore/store.ts" />
 "use strict";
-const ds = require('./lib/dataservice');
-const ctx = require('./lib/appcontext');
-const breeze = require('breeze-client');
-const dal = require('./lib/dataservice');
-const store = require('./datastore/store');
+var ctx = require('./lib/appcontext');
+var breeze = require('breeze-client');
+var dal = require('./lib/dataservice');
+var store = require('./datastore/store');
 var f = require('string-format');
+var root = require('root-path');
+var fexists = require('file-exists');
 function sendResponse(data, res) {
     res.send(data);
 }
@@ -50,7 +51,7 @@ function dispatch_call(operation, req, res, next) {
 exports.dispatch_call = dispatch_call;
 function format_qry(qry) {
     var str_qry = JSON.stringify(qry);
-    return JSON.parse(str_qry, (key, val) => {
+    return JSON.parse(str_qry, function (key, val) {
         if (val === '___NULL___') {
             return null;
         }
@@ -62,15 +63,14 @@ function format_qry(qry) {
 }
 function fetch_data(req, res, next) {
     var __qry = format_qry(req.body);
-    var _ctx = new ctx.AppContext();
     var qry = new breeze.EntityQuery(__qry);
-    var srv = new dal.DataService(_ctx, qry.resourceName);
-    srv.fetch(qry).then(data => {
+    var srv = get_service(qry.resourceName);
+    srv.fetch(qry).then(function (data) {
         var rsp = {
             payload: srv.datasource.exportEntities()
         };
         res.send(rsp);
-    }).fail(err => {
+    }).fail(function (err) {
         res.status(500).send(JSON.stringify(err));
     });
 }
@@ -78,40 +78,42 @@ function fetch_metadata(req, res, next) {
     res.send(store.ModelStore.exportMetadata());
 }
 function save_changes(req, res, next) {
-    var _ctx = new ctx.AppContext();
-    var srv = new dal.DataService(_ctx, req.body['service']);
-    srv.savechanges(req.body['entities']).then(rst => {
+    var srv = get_service(req.body['service']);
+    srv.savechanges(req.body['entities']).then(function (rst) {
         var response = {
             payload: rst
         };
         res.send(response);
-    }).fail(err => {
+    }).fail(function (err) {
         res.status(500).send(JSON.stringify(err));
     });
 }
 function raw(req, res, next) {
-    var _ctx = new ctx.AppContext();
-    var srv = new dal.DataService(_ctx, req.body['service']);
+    var srv = get_service(req.body['service']);
     srv.exec_sql({
         sql: req.body['sql']
-    }).then(data => {
+    }).then(function (data) {
         res.send(data);
-    }).fail(err => {
+    }).fail(function (err) {
         res.status(500).send(JSON.stringify(err));
     });
 }
 function call(req, res, next) {
 }
-function test(req, res) {
-    var app_ctx = new ctx.AppContext();
-    var s = new ds.DataService(app_ctx, 'prof');
-    var qry = breeze.EntityQuery.from('prof');
-    s.fetch(qry).then(data => {
-        var list = s.datasource.getEntities('prof');
-        res.send(f("count: {0}", list.length));
-    }).fail(err => {
-        res.send(JSON.stringify(err));
-    });
+function get_service(srvname) {
+    var _ctx = new ctx.AppContext();
+    if (fexists(root('/server/services/' + srvname + '.js'))) {
+        var srv = require(root('/server/services/' + srvname));
+        var _fn_name = Object.keys(srv)[0];
+        try {
+            return (new srv[_fn_name](_ctx, srvname));
+        }
+        catch (e) {
+            throw _fn_name;
+        }
+    }
+    else {
+        return new dal.DataService(_ctx, srvname);
+    }
 }
-exports.test = test;
 //# sourceMappingURL=dispatcher.js.map

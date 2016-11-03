@@ -12,6 +12,8 @@ import _ = require('lodash');
 import dal = require('./lib/dataservice');
 import store = require('./datastore/store');
 var f = require('string-format');
+var root = require('root-path');
+var fexists = require('file-exists');
 
 //import FileUploader = require('./lib/fileupload');
 //import localDB = require('./local/localdb');
@@ -99,14 +101,10 @@ function format_qry(qry: any) {
 
 function fetch_data(req: express.Request, res: express.Response, next: any) {
         
-    var __qry: any = format_qry(req.body);
-    
-    var _ctx = new ctx.AppContext();
-
+    var __qry: any = format_qry(req.body);    
     var qry = new breeze.EntityQuery(__qry);
-
-    var srv = new dal.DataService(_ctx, qry.resourceName);
-
+    
+    var srv = get_service(qry.resourceName);
     srv.fetch(qry).then(data => {
 
         var rsp = {
@@ -130,10 +128,8 @@ function fetch_metadata(req: express.Request, res: express.Response, next: any) 
 
 
 function save_changes(req: express.Request, res: express.Response, next: any) {
-
-    var _ctx = new ctx.AppContext();
-
-    var srv = new dal.DataService(_ctx, req.body['service']);
+    
+    var srv = get_service(req.body['service']);
 
     srv.savechanges(req.body['entities']).then(rst => {
 
@@ -153,10 +149,8 @@ function save_changes(req: express.Request, res: express.Response, next: any) {
 
 
 function raw(req: express.Request, res: express.Response, next: any) {
-
-    var _ctx = new ctx.AppContext();
-
-    var srv = new dal.DataService(_ctx, req.body['service']);
+    
+    var srv = get_service(req.body['service']);
 
     srv.exec_sql({
         sql: req.body['sql']
@@ -174,29 +168,34 @@ function raw(req: express.Request, res: express.Response, next: any) {
 }
 
 
-
 function call(req: express.Request, res: express.Response, next: any) {
+
+
 
 }
 
 
-export function test(req: express.Request, res: express.Response) {
+function get_service(srvname: string) {
 
-    var app_ctx = new ctx.AppContext();
+    var _ctx = new ctx.AppContext();
 
-    var s: ds.DataService = new ds.DataService(app_ctx, 'prof');
+    if (fexists(root('/server/services/' + srvname + '.js'))) {
 
-    var qry = breeze.EntityQuery.from('prof');
+        var srv: any = require(root('/server/services/' + srvname));
 
-    s.fetch(qry).then(data => {
+        var _fn_name = Object.keys(srv)[0];
 
-        var list = s.datasource.getEntities('prof');
+        try {
+            return (new srv[_fn_name](_ctx, srvname));
 
-        res.send(f("count: {0}", list.length));
+        } catch(e){
 
-    }).fail(err => {
+            throw _fn_name;
+        }
 
-        res.send(JSON.stringify(err));
-    });
+    } else {
+
+        return new dal.DataService(_ctx, srvname)
+    }
     
 }
