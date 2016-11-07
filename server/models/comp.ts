@@ -24,7 +24,8 @@ module.exports = function () {
             id: { dataType: breeze.DataType.String, isPartOfKey: true },
             compid: { dataType: breeze.DataType.String },
             deptname: { dataType: breeze.DataType.String },
-            deptparentid: { dataType: breeze.DataType.String }
+            deptparentid: { dataType: breeze.DataType.String },
+            deptoutline: { dataType: breeze.DataType.String }
         }
     });
     
