@@ -18,5 +18,15 @@ module.exports = function () {
         }
     });
 
+    store.add_to_Store({
+        defaultResourceName: 'compdept',
+        dataProperties: {
+            id: { dataType: breeze.DataType.String, isPartOfKey: true },
+            compid: { dataType: breeze.DataType.String },
+            deptname: { dataType: breeze.DataType.String },
+            deptparentid: { dataType: breeze.DataType.String }
+        }
+    });
+    
 }
 
