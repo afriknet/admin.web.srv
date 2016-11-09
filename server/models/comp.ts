@@ -18,5 +18,28 @@ module.exports = function () {
         }
     });
 
+
+    store.add_to_Store({
+        defaultResourceName: 'compdept',
+        dataProperties: {
+            id: { dataType: breeze.DataType.String, isPartOfKey: true },
+            compid: { dataType: breeze.DataType.String, isPartOfKey: true },
+            deptname: { dataType: breeze.DataType.String },
+            deptparentid: { dataType: breeze.DataType.String }            
+        }
+    });
+
+
+    store.add_to_Store({
+        defaultResourceName: 'emp',
+        dataProperties: {
+            id: { dataType: breeze.DataType.String, isPartOfKey: true },
+            usrid: { dataType: breeze.DataType.String },
+            compid: { dataType: breeze.DataType.String },
+            deptid: { dataType: breeze.DataType.String },
+            empemail: { dataType: breeze.DataType.String },
+        }
+    });
+
 }
 
