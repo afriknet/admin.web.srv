@@ -2,6 +2,7 @@
 /// <reference path="../datastore/store.ts" />
 "use strict";
 var root = require('root-path');
+var ctx = require('./appcontext');
 var Q = require('q');
 var br_sequel = require(root('/server/breeze_sequel/main'));
 var sequel_manager = br_sequel.SequelizeManager;
@@ -11,13 +12,14 @@ var __sequel = require('sequelize');
 var store = require('../datastore/store');
 var breeze = require('breeze-client');
 require('./adapter');
+var file_exists = require('file-exists');
 br_sequel.breeze.config.initializeAdapterInstance('dataService', 'adapter_webApi', true);
 var DataService = (function () {
     function DataService(context, model) {
         this.context = context;
         this.model = model;
     }
-    Object.defineProperty(DataService.prototype, "datasource", {
+    Object.defineProperty(DataService.prototype, "ds", {
         get: function () {
             if (!this.__dm) {
                 this.__dm = new breeze.EntityManager({
@@ -37,7 +39,7 @@ var DataService = (function () {
         var _this = this;
         var that = this;
         data.forEach(function (entity) {
-            _this.datasource.createEntity(_this.model, entity, breeze.EntityState.Unchanged, breeze.MergeStrategy.OverwriteChanges);
+            _this.ds.createEntity(_this.model, entity, breeze.EntityState.Unchanged, breeze.MergeStrategy.OverwriteChanges);
         });
     };
     DataService.prototype.__execQuery = function (query) {
@@ -87,24 +89,45 @@ var DataService = (function () {
         return d.promise;
     };
     DataService.prototype.savechanges = function (data) {
-        this.datasource.importEntities(data, { mergeStrategy: breeze.MergeStrategy.OverwriteChanges });
+        this.ds.importEntities(data, { mergeStrategy: breeze.MergeStrategy.OverwriteChanges });
         this.on_savingChanges();
-        return this.do_savechanges();
+        return this.postchanges();
     };
     DataService.prototype.on_savingChanges = function () {
     };
-    DataService.prototype.do_savechanges = function () {
+    DataService.prototype.postchanges = function () {
         var dataservice = br_sequel.breeze.config.getAdapterInstance('dataService');
         var savecontext = {
-            entityManager: this.datasource,
+            entityManager: this.ds,
             dataService: dataservice,
             resourceName: this.model
         };
-        var bundle = { entities: this.datasource.getEntities(), saveOptions: {} };
+        var bundle = { entities: this.ds.getEntities(), saveOptions: {} };
         var saveBundle = dataservice.saveChanges(savecontext, bundle);
         return this.__saveChanges(saveBundle);
+    };
+    // generic call
+    DataService.prototype.call = function (args) {
+        return this[args.method].call(this, args.params);
     };
     return DataService;
 }());
 exports.DataService = DataService;
+function GetService(srvname) {
+    var _ctx = new ctx.AppContext();
+    if (file_exists(root('/server/services/' + srvname + '.js'))) {
+        var srv = require(root('/server/services/' + srvname));
+        var _fn_name = Object.keys(srv)[0];
+        try {
+            return (new srv[_fn_name](_ctx, srvname));
+        }
+        catch (e) {
+            throw _fn_name;
+        }
+    }
+    else {
+        return new DataService(_ctx, srvname);
+    }
+}
+exports.GetService = GetService;
 //# sourceMappingURL=dataservice.js.map

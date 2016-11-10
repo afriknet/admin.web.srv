@@ -15,14 +15,20 @@ import _ = require('lodash');
 import store = require('../datastore/store');
 import breeze = require('breeze-client');
 require('./adapter');
-
+var file_exists = require('file-exists');
 
 br_sequel.breeze.config.initializeAdapterInstance('dataService', 'adapter_webApi', true);
 
 
+export interface CallParams {
+    method: string,
+    params: any
+}
+
+
 export class DataService {
 
-    private context: ctx.AppContext;
+    context: ctx.AppContext;
     private model: string;
 
     constructor(context: ctx.AppContext, model: string) {
@@ -32,7 +38,7 @@ export class DataService {
 
 
     private __dm: breeze.EntityManager;
-    get datasource(): breeze.EntityManager {
+    get ds(): breeze.EntityManager {
 
         if (!this.__dm) {
             this.__dm = new breeze.EntityManager({
@@ -53,7 +59,7 @@ export class DataService {
 
         data.forEach(entity => {
 
-            this.datasource.createEntity(this.model, entity, breeze.EntityState.Unchanged, breeze.MergeStrategy.OverwriteChanges);
+            this.ds.createEntity(this.model, entity, breeze.EntityState.Unchanged, breeze.MergeStrategy.OverwriteChanges);
 
         });
     }
@@ -145,11 +151,11 @@ export class DataService {
 
     savechanges(data: string): Q.Promise<any> {
 
-        this.datasource.importEntities(data, { mergeStrategy: breeze.MergeStrategy.OverwriteChanges });
+        this.ds.importEntities(data, { mergeStrategy: breeze.MergeStrategy.OverwriteChanges });
         
         this.on_savingChanges();
         
-        return this.do_savechanges();
+        return this.postchanges();
     }
 
 
@@ -163,18 +169,18 @@ export class DataService {
 
 
 
-    do_savechanges(): Q.Promise<any> {
+    postchanges(): Q.Promise<any> {
 
         var dataservice: any = br_sequel.breeze.config.getAdapterInstance('dataService');
 
         var savecontext = {
-            entityManager: this.datasource,
+            entityManager: this.ds,
             dataService: dataservice,
             resourceName: this.model
         }
 
 
-        var bundle = { entities: this.datasource.getEntities(), saveOptions: {} };
+        var bundle = { entities: this.ds.getEntities(), saveOptions: {} };
 
 
         var saveBundle = dataservice.saveChanges(savecontext, bundle);
@@ -183,4 +189,38 @@ export class DataService {
         return this.__saveChanges(saveBundle);
 
     }
+
+
+    // generic call
+    call(args: CallParams): Q.Promise<any> {
+
+        return this[args.method].call(this, args.params);
+
+    }
+}
+
+
+export function GetService(srvname: string): DataService {
+
+    var _ctx = new ctx.AppContext();
+
+    if (file_exists(root('/server/services/' + srvname + '.js'))) {
+
+        var srv: any = require(root('/server/services/' + srvname));
+
+        var _fn_name = Object.keys(srv)[0];
+
+        try {
+            return (new srv[_fn_name](_ctx, srvname));
+
+        } catch (e) {
+
+            throw _fn_name;
+        }
+
+    } else {
+
+        return new DataService(_ctx, srvname)
+    }
+
 }

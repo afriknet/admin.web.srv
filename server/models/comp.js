@@ -24,5 +24,15 @@ module.exports = function () {
             deptoutline: { dataType: breeze.DataType.String }
         }
     });
+    store.add_to_Store({
+        defaultResourceName: 'emp',
+        dataProperties: {
+            id: { dataType: breeze.DataType.String, isPartOfKey: true },
+            usrid: { dataType: breeze.DataType.String },
+            compid: { dataType: breeze.DataType.String },
+            deptid: { dataType: breeze.DataType.String },
+            deptemail: { dataType: breeze.DataType.String }
+        }
+    });
 };
 //# sourceMappingURL=comp.js.map

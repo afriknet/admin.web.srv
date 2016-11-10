@@ -9,11 +9,11 @@ import ctx = require('./lib/appcontext');
 import breeze = require('breeze-client');
 import Q = require('q');
 import _ = require('lodash');
-import dal = require('./lib/dataservice');
+import dx = require('./lib/dataservice');
 import store = require('./datastore/store');
 var f = require('string-format');
 var root = require('root-path');
-var fexists = require('file-exists');
+var file_exists = require('file-exists');
 
 //import FileUploader = require('./lib/fileupload');
 //import localDB = require('./local/localdb');
@@ -52,6 +52,7 @@ export function dispatch_call(operation: string, req: express.Request, res: expr
 
         } break;
 
+
         case operationtype.fetch: {
 
             fetch_data(req, res, next);
@@ -71,8 +72,11 @@ export function dispatch_call(operation: string, req: express.Request, res: expr
             save_changes(req, res, next);
 
         } break;
-            
+
+
         case operationtype.call: {
+
+            call(req, res, next);
 
         } break;
     }
@@ -102,13 +106,15 @@ function format_qry(qry: any) {
 function fetch_data(req: express.Request, res: express.Response, next: any) {
         
     var __qry: any = format_qry(req.body);    
+
     var qry = new breeze.EntityQuery(__qry);
-    
-    var srv = get_service(qry.resourceName);
+
+    var srv: dx.DataService = dx.GetService(qry.resourceName);
+
     srv.fetch(qry).then(data => {
 
         var rsp = {
-            payload: srv.datasource.exportEntities() 
+            payload: srv.ds.exportEntities() 
         }
 
         res.send(rsp);
@@ -169,33 +175,26 @@ function raw(req: express.Request, res: express.Response, next: any) {
 
 
 function call(req: express.Request, res: express.Response, next: any) {
+    
+    var srv: dx.DataService = get_service(req.body['service']);
 
+    srv.call({
+        method: req.body['method'],
+        params: req.body['params']
+    }).then(rst => {
 
+        res.send(rst);
 
+    }).fail(err => {
+
+        res.status(500).send(JSON.stringify(err));
+
+    });
 }
 
 
 function get_service(srvname: string) {
 
-    var _ctx = new ctx.AppContext();
-
-    if (fexists(root('/server/services/' + srvname + '.js'))) {
-
-        var srv: any = require(root('/server/services/' + srvname));
-
-        var _fn_name = Object.keys(srv)[0];
-
-        try {
-            return (new srv[_fn_name](_ctx, srvname));
-
-        } catch(e){
-
-            throw _fn_name;
-        }
-
-    } else {
-
-        return new dal.DataService(_ctx, srvname)
-    }
+    return dx.GetService(srvname);
     
 }

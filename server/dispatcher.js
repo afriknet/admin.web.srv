@@ -3,13 +3,12 @@
 /// <reference path="lib/dataservice.ts" />
 /// <reference path="datastore/store.ts" />
 "use strict";
-var ctx = require('./lib/appcontext');
 var breeze = require('breeze-client');
-var dal = require('./lib/dataservice');
+var dx = require('./lib/dataservice');
 var store = require('./datastore/store');
 var f = require('string-format');
 var root = require('root-path');
-var fexists = require('file-exists');
+var file_exists = require('file-exists');
 function sendResponse(data, res) {
     res.send(data);
 }
@@ -44,6 +43,7 @@ function dispatch_call(operation, req, res, next) {
             break;
         case exports.operationtype.call:
             {
+                call(req, res, next);
             }
             break;
     }
@@ -64,10 +64,10 @@ function format_qry(qry) {
 function fetch_data(req, res, next) {
     var __qry = format_qry(req.body);
     var qry = new breeze.EntityQuery(__qry);
-    var srv = get_service(qry.resourceName);
+    var srv = dx.GetService(qry.resourceName);
     srv.fetch(qry).then(function (data) {
         var rsp = {
-            payload: srv.datasource.exportEntities()
+            payload: srv.ds.exportEntities()
         };
         res.send(rsp);
     }).fail(function (err) {
@@ -99,21 +99,17 @@ function raw(req, res, next) {
     });
 }
 function call(req, res, next) {
+    var srv = get_service(req.body['service']);
+    srv.call({
+        method: req.body['method'],
+        params: req.body['params']
+    }).then(function (rst) {
+        res.send(rst);
+    }).fail(function (err) {
+        res.status(500).send(JSON.stringify(err));
+    });
 }
 function get_service(srvname) {
-    var _ctx = new ctx.AppContext();
-    if (fexists(root('/server/services/' + srvname + '.js'))) {
-        var srv = require(root('/server/services/' + srvname));
-        var _fn_name = Object.keys(srv)[0];
-        try {
-            return (new srv[_fn_name](_ctx, srvname));
-        }
-        catch (e) {
-            throw _fn_name;
-        }
-    }
-    else {
-        return new dal.DataService(_ctx, srvname);
-    }
+    return dx.GetService(srvname);
 }
 //# sourceMappingURL=dispatcher.js.map
