@@ -152,6 +152,7 @@
     <TypeScriptCompile Include="server\models\prof.ts" />
     <TypeScriptCompile Include="server\models\usrr.ts" />
     <TypeScriptCompile Include="server\services\comp.ts" />
+    <TypeScriptCompile Include="server\services\compdept.ts" />
     <TypeScriptCompile Include="server\services\prof.ts" />
     <TypeScriptCompile Include="typings\breeze\breeze.d.ts" />
     <TypeScriptCompile Include="typings\express\express.d.ts" />

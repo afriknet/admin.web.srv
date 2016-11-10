@@ -88,7 +88,10 @@ var DataService = (function () {
     };
     DataService.prototype.savechanges = function (data) {
         this.datasource.importEntities(data, { mergeStrategy: breeze.MergeStrategy.OverwriteChanges });
+        this.on_savingChanges();
         return this.do_savechanges();
+    };
+    DataService.prototype.on_savingChanges = function () {
     };
     DataService.prototype.do_savechanges = function () {
         var dataservice = br_sequel.breeze.config.getAdapterInstance('dataService');

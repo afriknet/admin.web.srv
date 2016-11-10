@@ -146,9 +146,20 @@ export class DataService {
     savechanges(data: string): Q.Promise<any> {
 
         this.datasource.importEntities(data, { mergeStrategy: breeze.MergeStrategy.OverwriteChanges });
-
+        
+        this.on_savingChanges();
+        
         return this.do_savechanges();
     }
+
+
+
+    on_savingChanges() {
+
+
+
+    }
+
 
 
 
