@@ -8,8 +8,9 @@ store.add_to_Store({
         usrname: { dataType: breeze.DataType.String },
         usrsurname: { dataType: breeze.DataType.String },
         usrpassword: { dataType: breeze.DataType.String },
-        usrmail: { dataType: breeze.DataType.String },
-        usropic: { dataType: breeze.DataType.String }
+        usremail: { dataType: breeze.DataType.String },
+        usrpic: { dataType: breeze.DataType.String },
+        usrstatus: { dataType: breeze.DataType.String }
     }
 });
 //# sourceMappingURL=usr.js.map

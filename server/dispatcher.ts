@@ -105,7 +105,15 @@ function format_qry(qry: any) {
 
 function fetch_data(req: express.Request, res: express.Response, next: any) {
         
-    var __qry: any = format_qry(req.body);    
+    var __qry: any = format_qry(req.body);  
+
+    if(!__qry){
+
+        if(!__qry){
+
+        }
+
+    }  
 
     var qry = new breeze.EntityQuery(__qry);
 
