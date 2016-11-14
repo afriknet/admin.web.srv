@@ -63,6 +63,10 @@ function format_qry(qry) {
 }
 function fetch_data(req, res, next) {
     var __qry = format_qry(req.body);
+    if (!__qry) {
+        if (!__qry) {
+        }
+    }
     var qry = new breeze.EntityQuery(__qry);
     var srv = dx.GetService(qry.resourceName);
     srv.fetch(qry).then(function (data) {

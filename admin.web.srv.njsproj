@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4679e24c-a515-45a6-a776-99300f142fee}</ProjectGuid>
     <ProjectHome />
-    <ProjectView>ProjectFiles</ProjectView>
+    <ProjectView>ShowAllFiles</ProjectView>
     <StartupFile>app.js</StartupFile>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -57,6 +57,7 @@
     <Compile Include="server\breeze_sequel\utils.js" />
     <Compile Include="server\datastore\meta.js" />
     <Compile Include="tasks\pipeline.js" />
+    <Content Include="tsconfig.json" />
     <Content Include="views\403.ejs" />
     <Content Include="views\404.ejs" />
     <Content Include="views\500.ejs" />
