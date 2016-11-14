@@ -46,7 +46,8 @@ export class EmpSrv extends dx.DataService {
                         id: usrid,
                         usrname: args.email,
                         usremail: args.email,
-                        usrpassword: '123456789'
+                        usrpassword: '123456789',
+                        usrstatus: 0 // pending invitation
                     });
 
 

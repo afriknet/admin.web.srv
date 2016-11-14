@@ -38,7 +38,8 @@ var EmpSrv = (function (_super) {
                     id: usrid,
                     usrname: args.email,
                     usremail: args.email,
-                    usrpassword: '123456789'
+                    usrpassword: '123456789',
+                    usrstatus: 0 // pending invitation
                 });
                 usr_srv.postchanges().then(function () {
                     emp_srv.ds.createEntity('emp', {

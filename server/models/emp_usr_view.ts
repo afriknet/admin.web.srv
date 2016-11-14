@@ -9,9 +9,8 @@ module.exports = function () {
 
     store.add_to_Store({
         defaultResourceName: 'emp_usr_view',
-        dataProperties: {
-            id: { dataType: breeze.DataType.String, isPartOfKey: true },
-            empid: { dataType: breeze.DataType.String },
+        dataProperties: {            
+            empid: { dataType: breeze.DataType.String, isPartOfKey: true },
             compid: { dataType: breeze.DataType.String },
             deptid: { dataType: breeze.DataType.String },
             empemail: { dataType: breeze.DataType.String },
