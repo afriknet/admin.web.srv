@@ -56,6 +56,7 @@ export class EmpSrv extends dx.DataService {
                         emp_srv.ds.createEntity('emp', {
                             id: guid.raw(),
                             usrid: usrid,
+                            empemail: args.email,
                             compid: args.compid,
                             deptid: args.deptid,                            
                         });

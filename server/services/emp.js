@@ -44,6 +44,7 @@ var EmpSrv = (function (_super) {
                     emp_srv.ds.createEntity('emp', {
                         id: guid.raw(),
                         usrid: usrid,
+                        empemail: args.email,
                         compid: args.compid,
                         deptid: args.deptid,
                     });

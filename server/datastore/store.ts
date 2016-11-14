@@ -20,7 +20,7 @@ var addDataService = helper.addDataService.bind(helper);
 var addTypeToStore = helper.addTypeToStore.bind(helper);
 var setDefaultNamespace = helper.setDefaultNamespace.bind(helper);
 
-var dataNameSpace = 'afrikNetMarket';
+var dataNameSpace = 'StampDev';
 
 export interface DataProperties {
     [name: string]: DataPropertyDefinition
@@ -41,13 +41,9 @@ export interface DataPropertyDefinition {
 export interface Extensions {
     [name: string]: DataPropertyExtension
 }
-
-
 export interface DataPropertyExtension {
     description: string
 }
-
-
 export interface EntityTypeDefinition {
     namespace?: string;
     shortName?: string;
@@ -62,8 +58,6 @@ export interface EntityTypeDefinition {
     custom?: Extensions
 }
 
-setDefaultNamespace(dataNameSpace);
-
 function __addEntityType(store: breeze.MetadataStore, type: EntityTypeDefinition) {
 
     var _type = _.extend(type, {
@@ -74,8 +68,6 @@ function __addEntityType(store: breeze.MetadataStore, type: EntityTypeDefinition
 
     addTypeToStore(store, _type);
 }
-
-
 function __createDataStore(storeName: string): breeze.MetadataStore {
 
     var store: breeze.MetadataStore = new breeze.MetadataStore({
@@ -91,8 +83,6 @@ interface Schema {
     srvName: string,
     store: breeze.MetadataStore
 }
-
-
 var dbSchema: Schema[] = [];
 
 
@@ -103,15 +93,7 @@ function __regsiterSchema(srvName: string, store: breeze.MetadataStore) {
         store: store
     });
 }
-
-
 export var ModelStore: breeze.MetadataStore = new breeze.MetadataStore({ namingConvention: camelCaseConvention });
-
-
-addDataService(ModelStore, 'DataStore');
-setDefaultNamespace('afriknetMarket');
-    
-
 export function add_to_Store(entity_type: EntityTypeDefinition) {
 
     var _type = _.extend(entity_type, {
@@ -122,6 +104,13 @@ export function add_to_Store(entity_type: EntityTypeDefinition) {
 
     addTypeToStore(ModelStore, _type);
 }
+
+
+addDataService(ModelStore, 'DataStore');
+setDefaultNamespace(dataNameSpace);
+    
+
+
 
 
 

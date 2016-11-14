@@ -37,7 +37,7 @@ module.exports = function () {
             usrid: { dataType: breeze.DataType.String },
             compid: { dataType: breeze.DataType.String },
             deptid: { dataType: breeze.DataType.String },
-            deptemail: { dataType: breeze.DataType.String }            
+            empemail: { dataType: breeze.DataType.String }            
         }
     });
 

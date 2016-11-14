@@ -140,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="server\models\comp.ts" />
+    <TypeScriptCompile Include="server\models\emp_usr_view.ts" />
     <TypeScriptCompile Include="server\models\item.ts" />
     <TypeScriptCompile Include="server\lib\appcontext.ts" />
     <TypeScriptCompile Include="server\datastore\store.ts" />
