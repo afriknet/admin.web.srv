@@ -20,7 +20,7 @@ var EmpSrv = (function (_super) {
         var qry = new breeze.EntityQuery({
             from: 'emp',
             where: {
-                'empemail': { eq: args.email }
+                'empemail': { eq: args.usremail }
             }
         });
         //1. check if email exists already
@@ -31,21 +31,22 @@ var EmpSrv = (function (_super) {
                 });
             }
             else {
-                //2. create usr
+                //2. create usr  
                 var usr_srv = dx.GetService('usr');
                 var usrid = guid.raw();
                 usr_srv.ds.createEntity('usr', {
                     id: usrid,
-                    usrname: args.email,
-                    usremail: args.email,
+                    usrname: args.usrname,
+                    usrsurname: args.usrsurname,
+                    usremail: args.usremail,
                     usrpassword: '123456789',
-                    usrstatus: 0 // pending invitation
+                    usrstatus: parseInt(args.usrstatus) // pending invitation
                 });
                 usr_srv.postchanges().then(function () {
                     emp_srv.ds.createEntity('emp', {
                         id: guid.raw(),
                         usrid: usrid,
-                        empemail: args.email,
+                        empemail: args.usremail,
                         compid: args.compid,
                         deptid: args.deptid,
                     });
