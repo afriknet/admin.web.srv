@@ -11,6 +11,7 @@ store.add_to_Store({
         usrsurname: { dataType: breeze.DataType.String },
         usrpassword: { dataType: breeze.DataType.String },
         usremail: { dataType: breeze.DataType.String },
-        usrpic: { dataType: breeze.DataType.String }        
+        usrpic: { dataType: breeze.DataType.String },
+        usrstatus: { dataType: breeze.DataType.Int32 },
     }
 });
