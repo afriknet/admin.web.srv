@@ -11,6 +11,9 @@ store.add_to_Store({
         usremail: { dataType: breeze.DataType.String },
         usrpic: { dataType: breeze.DataType.String },
         usrstatus: { dataType: breeze.DataType.Int32 },
+        usrlinkedin: { dataType: breeze.DataType.String },
+        usrgoogleplus: { dataType: breeze.DataType.String },
+        usrfacebook: { dataType: breeze.DataType.String }
     },
     navigationProperties: {
         usra: {
