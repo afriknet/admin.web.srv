@@ -38,8 +38,29 @@ module.exports = function () {
             compid: { dataType: breeze.DataType.String },
             deptid: { dataType: breeze.DataType.String },
             empemail: { dataType: breeze.DataType.String }            
+        },
+        navigationProperties: {
+            jbr: {
+                entityTypeName: "jbr",
+                associationName: "rel_emp_jbr",
+                isScalar: false
+            }
         }
     });
 
+
+    store.add_to_Store({
+        defaultResourceName: 'jbr',
+        dataProperties: {
+            id: { dataType: breeze.DataType.String, isPartOfKey: true },
+            compid: { dataType: breeze.DataType.String },
+            deptid: { dataType: breeze.DataType.String },
+            jobdescr: { dataType: breeze.DataType.String },
+            jobstartdate: { dataType: breeze.DataType.DateTime },
+            jobenddate: { dataType: breeze.DataType.DateTime },
+            jobnotes: { dataType: breeze.DataType.String }
+        }
+    });
+    
 }
 
