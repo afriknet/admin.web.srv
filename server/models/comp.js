@@ -46,6 +46,7 @@ module.exports = function () {
         dataProperties: {
             id: { dataType: breeze.DataType.String, isPartOfKey: true },
             compid: { dataType: breeze.DataType.String },
+            empid: { dataType: breeze.DataType.String },
             deptid: { dataType: breeze.DataType.String },
             jobdescr: { dataType: breeze.DataType.String },
             jobstartdate: { dataType: breeze.DataType.DateTime },
