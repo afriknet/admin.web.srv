@@ -60,6 +60,14 @@ module.exports = function () {
             jobstartdate: { dataType: breeze.DataType.DateTime },
             jobenddate: { dataType: breeze.DataType.DateTime },
             jobnotes: { dataType: breeze.DataType.String }
+        },
+
+        navigationProperties: {
+            emp: {
+                type: "emp",
+                assoc: "rel_emp_jbr",
+                foreignKeyNames: ["empid"]
+            }
         }
     });
     

@@ -168,10 +168,10 @@ export class DataService {
 
 
 
-
     postchanges(): Q.Promise<any> {
 
         var dataservice: any = br_sequel.breeze.config.getAdapterInstance('dataService');
+
 
         var savecontext = {
             entityManager: this.ds,
