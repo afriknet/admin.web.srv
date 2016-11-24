@@ -49,6 +49,8 @@ module.exports = function () {
             empid: { dataType: breeze.DataType.String },
             deptid: { dataType: breeze.DataType.String },
             jobdescr: { dataType: breeze.DataType.String },
+            jbrcomp: { dataType: breeze.DataType.String },
+            jbrlocation: { dataType: breeze.DataType.String },
             jobstartdate: { dataType: breeze.DataType.DateTime },
             jobenddate: { dataType: breeze.DataType.DateTime },
             jobnotes: { dataType: breeze.DataType.String }
