@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4679e24c-a515-45a6-a776-99300f142fee}</ProjectGuid>
     <ProjectHome />
-    <ProjectView>ShowAllFiles</ProjectView>
+    <ProjectView>ProjectFiles</ProjectView>
     <StartupFile>app.js</StartupFile>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -135,6 +135,7 @@
     <Folder Include="typings\multer\" />
     <Folder Include="typings\node\" />
     <Folder Include="typings\q\" />
+    <Folder Include="typings\sequelize\" />
     <Folder Include="typings\serve-static\" />
     <Folder Include="typings\winston\" />
     <Folder Include="views" />
@@ -169,6 +170,7 @@
     <TypeScriptCompile Include="typings\multer\multer.d.ts" />
     <TypeScriptCompile Include="typings\node\node.d.ts" />
     <TypeScriptCompile Include="typings\q\Q.d.ts" />
+    <TypeScriptCompile Include="typings\sequelize\sequelize.d.ts" />
     <TypeScriptCompile Include="typings\serve-static\serve-static.d.ts" />
     <TypeScriptCompile Include="typings\tsd.d.ts" />
     <TypeScriptCompile Include="typings\winston\winston.d.ts" />

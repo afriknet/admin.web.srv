@@ -68,11 +68,9 @@ export class DataService {
     private __execQuery(query: breeze.EntityQuery): Q.Promise<any> {
 
         var d = Q.defer<any>();
-
-
+        
         var qry = new sequel_query(this.context.conn, query);
-
-
+        
         qry.execute().then(rst => {
             d.resolve(rst);
         });

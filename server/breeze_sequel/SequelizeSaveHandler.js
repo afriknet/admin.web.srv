@@ -82,9 +82,12 @@ ctor.prototype.save = function() {
 
 
 ctor.prototype._saveWithTransaction = function(saveMap) {
+
   var that = this;
+
   var sequelize = this.sequelizeManager.sequelize;
-  return sequelize.transaction().then(function(trx)   {
+
+  return this.sequelizeManager['get_transaction'](sequelize).then(function(trx)   {
 
     var nextPromise;
     var beforeSaveEntities = (that.beforeSaveEntities || noopBeforeSaveEntities).bind(that);

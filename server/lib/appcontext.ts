@@ -9,7 +9,8 @@ var fs = require('fs');
 
 var bs = require(root('/server/breeze_sequel/main'));
 var s_mgr = bs.SequelizeManager;
-var sqlize = require('sequelize');
+import sqlz = require('sequelize');
+import Q = require('q');
 
 import store = require('../datastore/store');
 var con = require(root('/config/connections'));
@@ -24,7 +25,28 @@ open_db_connection();
 export class AppContext {
 
     get conn(): any {
+
+        if (!conn['get_transaction']) {
+            conn['get_transaction'] = this.get_transaction
+        }
+
         return conn;
+    }
+
+    private __tx: any;
+
+
+    get_transaction(sequelize: any): Q.Promise<sqlz.Transaction> {
+
+        if (this.__tx) {
+            return Q.resolve(this.__tx);
+        }
+
+        var d = Q.defer<sqlz.Transaction>();
+
+        this.__tx = sequelize['transaction']();
+        
+        return this.__tx;
     }
     
 }

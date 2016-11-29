@@ -4,7 +4,7 @@ var root = require('root-path');
 var fs = require('fs');
 var bs = require(root('/server/breeze_sequel/main'));
 var s_mgr = bs.SequelizeManager;
-var sqlize = require('sequelize');
+var Q = require('q');
 var con = require(root('/config/connections'));
 var mysql = con.connections.local_mysql;
 var mssql = con.connections.mssql_connection;
@@ -15,11 +15,22 @@ var AppContext = (function () {
     }
     Object.defineProperty(AppContext.prototype, "conn", {
         get: function () {
+            if (!conn['get_transaction']) {
+                conn['get_transaction'] = this.get_transaction;
+            }
             return conn;
         },
         enumerable: true,
         configurable: true
     });
+    AppContext.prototype.get_transaction = function (sequelize) {
+        if (this.__tx) {
+            return Q.resolve(this.__tx);
+        }
+        var d = Q.defer();
+        this.__tx = sequelize['transaction']();
+        return this.__tx;
+    };
     return AppContext;
 }());
 exports.AppContext = AppContext;
