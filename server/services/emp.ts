@@ -41,7 +41,7 @@ export class EmpSrv extends dx.DataService {
                 } else {
                     
                     //2. create usr  
-                    var usr_srv: dx.DataService = dx.GetService('usr');
+                    var usr_srv: dx.DataService = dx.GetService(this.context, 'usr');
 
                     var usrid = guid.raw();
 

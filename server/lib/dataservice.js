@@ -2,7 +2,6 @@
 /// <reference path="../datastore/store.ts" />
 "use strict";
 var root = require('root-path');
-var ctx = require('./appcontext');
 var Q = require('q');
 var br_sequel = require(root('/server/breeze_sequel/main'));
 var sequel_manager = br_sequel.SequelizeManager;
@@ -113,8 +112,7 @@ var DataService = (function () {
     return DataService;
 }());
 exports.DataService = DataService;
-function GetService(srvname) {
-    var _ctx = new ctx.AppContext();
+function GetService(_ctx, srvname) {
     if (file_exists(root('/server/services/' + srvname + '.js'))) {
         var srv = require(root('/server/services/' + srvname));
         var _fn_name = Object.keys(srv)[0];

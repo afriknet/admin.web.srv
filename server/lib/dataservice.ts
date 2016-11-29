@@ -198,10 +198,8 @@ export class DataService {
 }
 
 
-export function GetService(srvname: string): DataService {
-
-    var _ctx = new ctx.AppContext();
-
+export function GetService(_ctx: ctx.AppContext, srvname: string): DataService {
+    
     if (file_exists(root('/server/services/' + srvname + '.js'))) {
 
         var srv: any = require(root('/server/services/' + srvname));

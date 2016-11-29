@@ -15,6 +15,7 @@ var EmpSrv = (function (_super) {
         _super.apply(this, arguments);
     }
     EmpSrv.prototype.invite_new_user = function (args) {
+        var _this = this;
         var d = Q.defer();
         var emp_srv = new dx.DataService(this.context, 'emp');
         var qry = new breeze.EntityQuery({
@@ -32,7 +33,7 @@ var EmpSrv = (function (_super) {
             }
             else {
                 //2. create usr  
-                var usr_srv = dx.GetService('usr');
+                var usr_srv = dx.GetService(_this.context, 'usr');
                 var usrid = guid.raw();
                 usr_srv.ds.createEntity('usr', {
                     id: usrid,

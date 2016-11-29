@@ -3,6 +3,7 @@
 /// <reference path="lib/dataservice.ts" />
 /// <reference path="datastore/store.ts" />
 "use strict";
+var ctx = require('./lib/appcontext');
 var breeze = require('breeze-client');
 var dx = require('./lib/dataservice');
 var store = require('./datastore/store');
@@ -20,30 +21,31 @@ exports.operationtype = {
     call: 'call'
 };
 function dispatch_call(operation, req, res, next) {
+    var _ctx = new ctx.AppContext();
     switch (operation) {
         case exports.operationtype.metadata:
             {
-                fetch_metadata(req, res, next);
+                fetch_metadata(_ctx, req, res, next);
             }
             break;
         case exports.operationtype.fetch:
             {
-                fetch_data(req, res, next);
+                fetch_data(_ctx, req, res, next);
             }
             break;
         case exports.operationtype.raw:
             {
-                raw(req, res, next);
+                raw(_ctx, req, res, next);
             }
             break;
         case exports.operationtype.save:
             {
-                save_changes(req, res, next);
+                save_changes(_ctx, req, res, next);
             }
             break;
         case exports.operationtype.call:
             {
-                call(req, res, next);
+                call(_ctx, req, res, next);
             }
             break;
     }
@@ -61,14 +63,14 @@ function format_qry(qry) {
         return val;
     });
 }
-function fetch_data(req, res, next) {
+function fetch_data(ctx, req, res, next) {
     var __qry = format_qry(req.body);
     if (!__qry) {
         if (!__qry) {
         }
     }
     var qry = new breeze.EntityQuery(__qry);
-    var srv = dx.GetService(qry.resourceName);
+    var srv = dx.GetService(ctx, qry.resourceName);
     srv.fetch(qry).then(function (data) {
         var rsp = {
             payload: srv.ds.exportEntities()
@@ -78,11 +80,11 @@ function fetch_data(req, res, next) {
         res.status(500).send(JSON.stringify(err));
     });
 }
-function fetch_metadata(req, res, next) {
+function fetch_metadata(ctx, req, res, next) {
     res.send(store.ModelStore.exportMetadata());
 }
-function save_changes(req, res, next) {
-    var srv = get_service(req.body['service']);
+function save_changes(ctx, req, res, next) {
+    var srv = get_service(ctx, req.body['service']);
     srv.savechanges(req.body['entities']).then(function (rst) {
         var response = {
             payload: rst
@@ -92,8 +94,8 @@ function save_changes(req, res, next) {
         res.status(500).send(JSON.stringify(err));
     });
 }
-function raw(req, res, next) {
-    var srv = get_service(req.body['service']);
+function raw(ctx, req, res, next) {
+    var srv = get_service(ctx, req.body['service']);
     srv.exec_sql({
         sql: req.body['sql']
     }).then(function (data) {
@@ -102,8 +104,8 @@ function raw(req, res, next) {
         res.status(500).send(JSON.stringify(err));
     });
 }
-function call(req, res, next) {
-    var srv = get_service(req.body['service']);
+function call(ctx, req, res, next) {
+    var srv = get_service(ctx, req.body['service']);
     srv.call({
         method: req.body['method'],
         params: req.body['params']
@@ -113,7 +115,7 @@ function call(req, res, next) {
         res.status(500).send(JSON.stringify(err));
     });
 }
-function get_service(srvname) {
-    return dx.GetService(srvname);
+function get_service(ctx, srvname) {
+    return dx.GetService(ctx, srvname);
 }
 //# sourceMappingURL=dispatcher.js.map
