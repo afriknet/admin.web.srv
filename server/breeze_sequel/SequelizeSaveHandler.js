@@ -87,29 +87,27 @@ ctor.prototype._saveWithTransaction = function(saveMap) {
 
   var sequelize = this.sequelizeManager.sequelize;
 
-  return this.sequelizeManager['get_transaction'](sequelize).then(function(trx)   {
+  var context = this.sequelizeManager['appcontext'];
 
-    var nextPromise;
-    var beforeSaveEntities = (that.beforeSaveEntities || noopBeforeSaveEntities).bind(that);
-    // beforeSaveEntities will either return nothing or a promise.
-    nextPromise = Promise.resolve(beforeSaveEntities(saveMap, trx));
+  return context.start_transaction().then((trx) => {
 
-    // saveCore returns either a list of entities or an object with an errors property.
-    return nextPromise.then(function () {
-      return that._saveCore(saveMap, trx);
-    }).then(function (r) {
-      if (r.errors) {
-        trx.rollback();
-        return r;
-      } else {
-        trx.commit();
-        return { entities: r, keyMappings: that._keyMappings };
-      }
-    }).catch(function (e) {
-      trx.rollback();
-      throw e;
-    });
+      return context.transactional( that, trx, () => {
+
+          var nextPromise;
+          var beforeSaveEntities = (that.beforeSaveEntities || noopBeforeSaveEntities).bind(that);
+
+          // beforeSaveEntities will either return nothing or a promise.
+          nextPromise = Promise.resolve(beforeSaveEntities(saveMap, trx));
+
+          // saveCore returns either a list of entities or an object with an errors property.
+          return nextPromise.then(function () {
+              return that._saveCore(saveMap, trx);
+          });
+          
+      })
+
   });
+
 };
 
 
