@@ -77,7 +77,7 @@ var DataService = (function () {
     DataService.prototype.__saveChanges = function (saveBundle) {
         var d = Q.defer();
         try {
-            sequel_save.save(this.context.conn, {
+            sequel_save.save(this.context, {
                 body: {
                     entities: JSON.parse(saveBundle).entities
                 }
@@ -93,9 +93,12 @@ var DataService = (function () {
         return d.promise;
     };
     DataService.prototype.savechanges = function (data) {
-        this.ds.importEntities(data, { mergeStrategy: breeze.MergeStrategy.OverwriteChanges });
-        this.on_savingChanges();
-        return this.postchanges();
+        var _this = this;
+        return this.context.transactional(function (tx) {
+            _this.ds.importEntities(data, { mergeStrategy: breeze.MergeStrategy.OverwriteChanges });
+            _this.on_savingChanges();
+            return _this.postchanges();
+        });
     };
     DataService.prototype.on_savingChanges = function () {
     };

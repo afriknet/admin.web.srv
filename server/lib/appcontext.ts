@@ -21,40 +21,34 @@ var conn = null;// boot.start_db(null);
 
 open_db_connection();
 
+export interface Transactional {
+
+    (tx: sqlz.Transaction): Q.Promise<any>
+
+}
 
 export class AppContext {
 
     constructor() {
-        this.tx_count = 0;
+        
     }
+
+    private __conn: any;
 
     get conn(): any {
 
-        if (!conn['appcontext']) {
-            conn['appcontext'] = this;
+        if (!this.__conn) {
+            this.__conn = conn;             
         }
-        
-        return conn;
-    }
 
-    private tx: any;
-    private tx_count: number;
-
-
-    begin_transaction(): Q.Promise<any> {
-
-        this.tx_count++;
-
-        if (this.tx_count === 1) {
-
-            this.tx = this.conn.sequelize.transaction();            
-        }        
-
-        return this.tx;
+        return this.__conn;
     }
 
 
-    transactional(callback: any) {
+    tx: sqlz.Transaction;
+
+
+    transactional(callback: Transactional) {
         
         if (!this.tx) {
 
@@ -76,88 +70,9 @@ export class AppContext {
         } else {
 
             return callback(this.tx);
-        }
-        
+        }        
     }
 
-
-    end_transaction() {
-
-        if (this.tx_count > 0) {
-            this.tx_count--;
-        }
-
-        if (this.tx_count === 0) {
-            this.tx = undefined;
-        }
-    }
-
-
-    transactional2( ctx, trx, callback: any) {
-
-        return callback().then((r) => {
-
-            return null;// this.end_transaction(ctx, trx, r);
-
-        }).catch(e => {
-
-            //this.end_transaction(ctx, trx, null, e);
-
-            throw e;
-
-        });
-        
-    }
-
-
-    end_transaction1(context, trx: any, r: any, e?: any) {
-        
-        try {
-
-            this.tx_count--;
-
-            if ( e || r.errors) {
-
-                trx.rollback();
-
-                return r;
-
-            } else {
-
-                if (this.tx_count === 0) {
-
-                    trx.commit();
-                }
-
-                return { entities: r, keyMappings: context['_keyMappings'] }
-
-            }
-
-        } finally {
-
-            if (this.tx_count === 0) {
-
-                this.tx = undefined;
-            }
-
-        }
-        
-    }
-
-
-
-    get_transaction(sequelize: any): Q.Promise<sqlz.Transaction> {
-
-        if (this.tx) {
-            return Q.resolve(this.tx);
-        }
-
-        var d = Q.defer<sqlz.Transaction>();
-
-        this.tx = sequelize['transaction']();
-        
-        return this.tx;
-    }
     
 }
 

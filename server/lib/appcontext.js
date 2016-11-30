@@ -4,7 +4,6 @@ var root = require('root-path');
 var fs = require('fs');
 var bs = require(root('/server/breeze_sequel/main'));
 var s_mgr = bs.SequelizeManager;
-var Q = require('q');
 var con = require(root('/config/connections'));
 var mysql = con.connections.local_mysql;
 var mssql = con.connections.mssql_connection;
@@ -12,25 +11,17 @@ var conn = null; // boot.start_db(null);
 open_db_connection();
 var AppContext = (function () {
     function AppContext() {
-        this.tx_count = 0;
     }
     Object.defineProperty(AppContext.prototype, "conn", {
         get: function () {
-            if (!conn['appcontext']) {
-                conn['appcontext'] = this;
+            if (!this.__conn) {
+                this.__conn = conn;
             }
-            return conn;
+            return this.__conn;
         },
         enumerable: true,
         configurable: true
     });
-    AppContext.prototype.begin_transaction = function () {
-        this.tx_count++;
-        if (this.tx_count === 1) {
-            this.tx = this.conn.sequelize.transaction();
-        }
-        return this.tx;
-    };
     AppContext.prototype.transactional = function (callback) {
         var _this = this;
         if (!this.tx) {
@@ -46,50 +37,6 @@ var AppContext = (function () {
         else {
             return callback(this.tx);
         }
-    };
-    AppContext.prototype.end_transaction = function () {
-        if (this.tx_count > 0) {
-            this.tx_count--;
-        }
-        if (this.tx_count === 0) {
-            this.tx = undefined;
-        }
-    };
-    AppContext.prototype.transactional2 = function (ctx, trx, callback) {
-        return callback().then(function (r) {
-            return null; // this.end_transaction(ctx, trx, r);
-        }).catch(function (e) {
-            //this.end_transaction(ctx, trx, null, e);
-            throw e;
-        });
-    };
-    AppContext.prototype.end_transaction1 = function (context, trx, r, e) {
-        try {
-            this.tx_count--;
-            if (e || r.errors) {
-                trx.rollback();
-                return r;
-            }
-            else {
-                if (this.tx_count === 0) {
-                    trx.commit();
-                }
-                return { entities: r, keyMappings: context['_keyMappings'] };
-            }
-        }
-        finally {
-            if (this.tx_count === 0) {
-                this.tx = undefined;
-            }
-        }
-    };
-    AppContext.prototype.get_transaction = function (sequelize) {
-        if (this.tx) {
-            return Q.resolve(this.tx);
-        }
-        var d = Q.defer();
-        this.tx = sequelize['transaction']();
-        return this.tx;
     };
     return AppContext;
 }());

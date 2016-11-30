@@ -130,7 +130,7 @@ export class DataService {
 
         try {
 
-            sequel_save.save(this.context.conn, {
+            sequel_save.save(this.context, {
                 body: {
                     entities: JSON.parse(saveBundle).entities
                 }
@@ -157,11 +157,16 @@ export class DataService {
 
     savechanges(data: string): Q.Promise<any> {
 
-        this.ds.importEntities(data, { mergeStrategy: breeze.MergeStrategy.OverwriteChanges });
+        return this.context.transactional(tx => {
+
+            this.ds.importEntities(data, { mergeStrategy: breeze.MergeStrategy.OverwriteChanges });
+
+            this.on_savingChanges();
+
+            return this.postchanges()
+
+        });
         
-        this.on_savingChanges();
-        
-        return this.postchanges();
     }
 
 

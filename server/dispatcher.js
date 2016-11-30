@@ -90,7 +90,7 @@ function save_changes(ctx, req, res, next) {
             payload: rst
         };
         res.send(response);
-    }).fail(function (err) {
+    }).catch(function (err) {
         res.status(500).send(JSON.stringify(err));
     });
 }

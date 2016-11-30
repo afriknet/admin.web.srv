@@ -155,7 +155,7 @@ function save_changes(ctx: ctx.AppContext, req: express.Request, res: express.Re
 
         res.send(response);
 
-    }).fail(err => {
+    }).catch(err => {
 
         res.status(500).send(JSON.stringify(err));
 

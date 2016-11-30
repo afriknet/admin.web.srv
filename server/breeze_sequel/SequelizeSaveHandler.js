@@ -25,9 +25,9 @@ function SequelizeSaveHandler(sequelizeManager, req) {
 
 var ctor = SequelizeSaveHandler;
 
-ctor.save = function(sequelizeManager, req ) {
-  var saveHandler = new SequelizeSaveHandler(sequelizeManager, req);
-  return saveHandler.save();
+ctor.save = function(context, req ) {
+    var saveHandler = new SequelizeSaveHandler(context.conn, req);
+  return saveHandler.save(context);
 };
 
 // virtual method - returns boolean
@@ -37,8 +37,10 @@ ctor.save = function(sequelizeManager, req ) {
 // virtual method - returns nothing
 //ctor.prototype.beforeSaveEntities = function(saveMap)
 
-ctor.prototype.save = function() {
+ctor.prototype.save = function (context) {
+    
   var beforeSaveEntity = (this.beforeSaveEntity || noopBeforeSaveEntity).bind(this);
+
   var entityTypeMap = {};
 
   var entityInfos = this.entitiesFromClient.map(function(entity) {
@@ -76,22 +78,18 @@ ctor.prototype.save = function() {
   // want to have SaveMap functions available
   var saveMap = _.extend(new SaveMap(this), saveMapData);
 
-  return this._saveWithTransaction(saveMap);
+  return this._saveWithTransaction(context, saveMap);
 
 };
 
 
-ctor.prototype._saveWithTransaction = function(saveMap) {
+ctor.prototype._saveWithTransaction = function (context, saveMap) {
 
   var that = this;
+    
+  var nextPromise;
 
-  var sequelize = this.sequelizeManager.sequelize;
-
-  var context = this.sequelizeManager['appcontext'];
-
-  return context.transactional((trx) => {
-
-      var nextPromise;
+  return context.transactional(function (trx) {
 
       var beforeSaveEntities = (that.beforeSaveEntities || noopBeforeSaveEntities).bind(that);
 
@@ -112,7 +110,11 @@ ctor.prototype._saveWithTransaction = function(saveMap) {
           }
 
       });
-  })
+
+
+  });
+
+  
   
 
       //return context.start_transaction().then((trx) => {
