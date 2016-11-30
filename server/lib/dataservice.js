@@ -96,13 +96,16 @@ var DataService = (function () {
         var _this = this;
         return this.context.transactional(function (tx) {
             _this.ds.importEntities(data, { mergeStrategy: breeze.MergeStrategy.OverwriteChanges });
-            _this.on_savingChanges();
             return _this.postchanges();
         });
     };
-    DataService.prototype.on_savingChanges = function () {
+    DataService.prototype.before_post = function () {
+        return Q.resolve(true);
     };
-    DataService.prototype.postchanges = function () {
+    DataService.prototype.after_post = function () {
+        return Q.resolve(true);
+    };
+    DataService.prototype.internal_post = function () {
         var dataservice = br_sequel.breeze.config.getAdapterInstance('dataService');
         var savecontext = {
             entityManager: this.ds,
@@ -112,6 +115,14 @@ var DataService = (function () {
         var bundle = { entities: this.ds.getEntities(), saveOptions: {} };
         var saveBundle = dataservice.saveChanges(savecontext, bundle);
         return this.__saveChanges(saveBundle);
+    };
+    DataService.prototype.postchanges = function () {
+        var _this = this;
+        return this.before_post().then(function () {
+            return _this.internal_post().then(function () {
+                return _this.after_post();
+            });
+        });
     };
     // generic call
     DataService.prototype.call = function (args) {
@@ -128,7 +139,7 @@ function GetService(_ctx, srvname) {
             return (new srv[_fn_name](_ctx, srvname));
         }
         catch (e) {
-            throw _fn_name;
+            throw e;
         }
     }
     else {

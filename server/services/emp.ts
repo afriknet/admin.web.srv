@@ -10,6 +10,7 @@ import breeze = require('breeze-client');
 export class EmpSrv extends dx.DataService {
     
     invite_new_user(args: {
+        backendid: string,
         compid: string,
         deptid: string,
         usremail: string,

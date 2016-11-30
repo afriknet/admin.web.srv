@@ -160,30 +160,28 @@ export class DataService {
         return this.context.transactional(tx => {
 
             this.ds.importEntities(data, { mergeStrategy: breeze.MergeStrategy.OverwriteChanges });
-
-            this.on_savingChanges();
-
+            
             return this.postchanges()
 
         });
         
     }
+    
 
-
-
-    on_savingChanges() {
-
-
-
+    before_post(): Q.Promise<any> {
+        return Q.resolve(true);
     }
 
 
+    after_post(): Q.Promise<any> {
+        return Q.resolve(true);
+    }
 
-    postchanges(): Q.Promise<any> {
+
+    private internal_post() {
 
         var dataservice: any = br_sequel.breeze.config.getAdapterInstance('dataService');
-
-
+        
         var savecontext = {
             entityManager: this.ds,
             dataService: dataservice,
@@ -198,7 +196,21 @@ export class DataService {
 
 
         return this.__saveChanges(saveBundle);
+    }
 
+
+    postchanges(): Q.Promise<any> {
+
+        return this.before_post().then(() => {
+
+            return this.internal_post().then(() => {
+
+                return this.after_post();
+            });
+
+        });
+
+        
     }
 
 
@@ -224,7 +236,7 @@ export function GetService(_ctx: ctx.AppContext, srvname: string): DataService {
 
         } catch (e) {
 
-            throw _fn_name;
+            throw e;
         }
 
     } else {
