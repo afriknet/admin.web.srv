@@ -24,23 +24,46 @@ var AppContext = (function () {
         enumerable: true,
         configurable: true
     });
-    AppContext.prototype.start_transaction = function () {
+    AppContext.prototype.begin_transaction = function () {
         this.tx_count++;
         if (this.tx_count === 1) {
-            this.tx_fn = this.conn.sequelize.transaction();
+            this.tx = this.conn.sequelize.transaction();
         }
-        return this.tx_fn;
+        return this.tx;
     };
-    AppContext.prototype.transactional = function (ctx, trx, callback) {
+    AppContext.prototype.transactional = function (callback) {
         var _this = this;
+        if (!this.tx) {
+            return this.conn.sequelize.transaction(function (tx) {
+                _this.tx = tx;
+                return callback(tx);
+            }).catch(function (e) {
+                throw e;
+            }).finally(function () {
+                _this.tx = undefined;
+            });
+        }
+        else {
+            return callback(this.tx);
+        }
+    };
+    AppContext.prototype.end_transaction = function () {
+        if (this.tx_count > 0) {
+            this.tx_count--;
+        }
+        if (this.tx_count === 0) {
+            this.tx = undefined;
+        }
+    };
+    AppContext.prototype.transactional2 = function (ctx, trx, callback) {
         return callback().then(function (r) {
-            return _this.end_transaction(ctx, trx, r);
+            return null; // this.end_transaction(ctx, trx, r);
         }).catch(function (e) {
-            _this.end_transaction(ctx, trx, null, e);
+            //this.end_transaction(ctx, trx, null, e);
             throw e;
         });
     };
-    AppContext.prototype.end_transaction = function (context, trx, r, e) {
+    AppContext.prototype.end_transaction1 = function (context, trx, r, e) {
         try {
             this.tx_count--;
             if (e || r.errors) {
@@ -56,17 +79,17 @@ var AppContext = (function () {
         }
         finally {
             if (this.tx_count === 0) {
-                this.tx_fn = undefined;
+                this.tx = undefined;
             }
         }
     };
     AppContext.prototype.get_transaction = function (sequelize) {
-        if (this.tx_fn) {
-            return Q.resolve(this.tx_fn);
+        if (this.tx) {
+            return Q.resolve(this.tx);
         }
         var d = Q.defer();
-        this.tx_fn = sequelize['transaction']();
-        return this.tx_fn;
+        this.tx = sequelize['transaction']();
+        return this.tx;
     };
     return AppContext;
 }());

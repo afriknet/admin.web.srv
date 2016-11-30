@@ -89,24 +89,57 @@ ctor.prototype._saveWithTransaction = function(saveMap) {
 
   var context = this.sequelizeManager['appcontext'];
 
-  return context.start_transaction().then((trx) => {
+  return context.transactional((trx) => {
 
-      return context.transactional( that, trx, () => {
+      var nextPromise;
 
-          var nextPromise;
-          var beforeSaveEntities = (that.beforeSaveEntities || noopBeforeSaveEntities).bind(that);
+      var beforeSaveEntities = (that.beforeSaveEntities || noopBeforeSaveEntities).bind(that);
 
-          // beforeSaveEntities will either return nothing or a promise.
-          nextPromise = Promise.resolve(beforeSaveEntities(saveMap, trx));
+      // beforeSaveEntities will either return nothing or a promise.
+      nextPromise = Promise.resolve(beforeSaveEntities(saveMap, trx));
 
-          // saveCore returns either a list of entities or an object with an errors property.
-          return nextPromise.then(function () {
-              return that._saveCore(saveMap, trx);
-          });
+      // saveCore returns either a list of entities or an object with an errors property.
+      return nextPromise.then(function () {
+
+          return that._saveCore(saveMap, trx);
+
+      }).then(function (r) {
+
+          if (r.errors) {
+              throw r;
+          } else {
+              return { entities: r, keyMappings: that._keyMappings };
+          }
+
+      });
+  })
+  
+
+      //return context.start_transaction().then((trx) => {
+
+      //    return context.transactional( that, trx, () => {
+
+      //        var nextPromise;
+      //        var beforeSaveEntities = (that.beforeSaveEntities || noopBeforeSaveEntities).bind(that);
+
+      //        // beforeSaveEntities will either return nothing or a promise.
+      //        nextPromise = Promise.resolve(beforeSaveEntities(saveMap, trx));
+
+      //        // saveCore returns either a list of entities or an object with an errors property.
+      //        return nextPromise.then(function () {
+      //            return that._saveCore(saveMap, trx);
+      //        }).then(function (e) {
+      //            if (r.errors) {
+      //                throw r;
+      //            } else {
+      //                return { entities: r, keyMappings: that._keyMappings };
+      //            }
+
+      //        })
           
-      })
+      //    })
 
-  });
+      //});
 
 };
 

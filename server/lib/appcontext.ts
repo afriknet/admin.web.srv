@@ -37,31 +37,71 @@ export class AppContext {
         return conn;
     }
 
-    private tx_fn: any;
+    private tx: any;
     private tx_count: number;
 
 
-    start_transaction() {
+    begin_transaction(): Q.Promise<any> {
 
         this.tx_count++;
 
         if (this.tx_count === 1) {
 
-            this.tx_fn = this.conn.sequelize.transaction();            
+            this.tx = this.conn.sequelize.transaction();            
         }        
-        return this.tx_fn;
-    }
-    
 
-    transactional( ctx, trx, callback: any) {
+        return this.tx;
+    }
+
+
+    transactional(callback: any) {
+        
+        if (!this.tx) {
+
+            return this.conn.sequelize.transaction(tx => {
+
+                this.tx = tx;
+
+                return callback(tx);
+
+            }).catch(e => {
+
+                throw e
+
+            }).finally(() => {
+
+                this.tx = undefined;
+            });
+
+        } else {
+
+            return callback(this.tx);
+        }
+        
+    }
+
+
+    end_transaction() {
+
+        if (this.tx_count > 0) {
+            this.tx_count--;
+        }
+
+        if (this.tx_count === 0) {
+            this.tx = undefined;
+        }
+    }
+
+
+    transactional2( ctx, trx, callback: any) {
 
         return callback().then((r) => {
 
-            return this.end_transaction(ctx,trx, r);
+            return null;// this.end_transaction(ctx, trx, r);
 
         }).catch(e => {
 
-            this.end_transaction(ctx, trx, null, e);
+            //this.end_transaction(ctx, trx, null, e);
 
             throw e;
 
@@ -70,7 +110,7 @@ export class AppContext {
     }
 
 
-    end_transaction(context, trx: any, r: any, e?: any) {
+    end_transaction1(context, trx: any, r: any, e?: any) {
         
         try {
 
@@ -97,7 +137,7 @@ export class AppContext {
 
             if (this.tx_count === 0) {
 
-                this.tx_fn = undefined;
+                this.tx = undefined;
             }
 
         }
@@ -108,15 +148,15 @@ export class AppContext {
 
     get_transaction(sequelize: any): Q.Promise<sqlz.Transaction> {
 
-        if (this.tx_fn) {
-            return Q.resolve(this.tx_fn);
+        if (this.tx) {
+            return Q.resolve(this.tx);
         }
 
         var d = Q.defer<sqlz.Transaction>();
 
-        this.tx_fn = sequelize['transaction']();
+        this.tx = sequelize['transaction']();
         
-        return this.tx_fn;
+        return this.tx;
     }
     
 }

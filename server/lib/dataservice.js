@@ -76,15 +76,20 @@ var DataService = (function () {
     };
     DataService.prototype.__saveChanges = function (saveBundle) {
         var d = Q.defer();
-        sequel_save.save(this.context.conn, {
-            body: {
-                entities: JSON.parse(saveBundle).entities
-            }
-        }).then(function () {
-            d.resolve(true);
-        }).catch(function (err) {
-            d.reject(err.message);
-        });
+        try {
+            sequel_save.save(this.context.conn, {
+                body: {
+                    entities: JSON.parse(saveBundle).entities
+                }
+            }).then(function (r) {
+                d.resolve(r);
+            }).catch(function (err) {
+                d.reject(err);
+            });
+        }
+        catch (e) {
+            d.reject(e);
+        }
         return d.promise;
     };
     DataService.prototype.savechanges = function (data) {

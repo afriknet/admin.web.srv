@@ -128,19 +128,27 @@ export class DataService {
 
         var d = Q.defer<any>();
 
-        sequel_save.save(this.context.conn, {
-            body: {
-                entities: JSON.parse(saveBundle).entities
-            }
-        }).then(() => {
+        try {
 
-            d.resolve(true);
+            sequel_save.save(this.context.conn, {
+                body: {
+                    entities: JSON.parse(saveBundle).entities
+                }
+            }).then((r) => {
 
-        }).catch((err) => {
+                d.resolve(r);
 
-            d.reject(err.message)
-        });
+            }).catch(err => {
 
+                d.reject(err)
+
+            });
+
+        } catch (e) {
+
+            d.reject(e)
+        }
+        
         return d.promise;
 
     }
