@@ -68,11 +68,9 @@ export class DataService {
     private __execQuery(query: breeze.EntityQuery): Q.Promise<any> {
 
         var d = Q.defer<any>();
-
-
+        
         var qry = new sequel_query(this.context.conn, query);
-
-
+        
         qry.execute().then(rst => {
             d.resolve(rst);
         });
@@ -130,19 +128,27 @@ export class DataService {
 
         var d = Q.defer<any>();
 
-        sequel_save.save(this.context.conn, {
-            body: {
-                entities: JSON.parse(saveBundle).entities
-            }
-        }).then(() => {
+        try {
 
-            d.resolve(true);
+            sequel_save.save(this.context, {
+                body: {
+                    entities: JSON.parse(saveBundle).entities
+                }
+            }).then((r) => {
 
-        }).catch((err) => {
+                d.resolve(r);
 
-            d.reject(err.message)
-        });
+            }).catch(err => {
 
+                d.reject(err)
+
+            });
+
+        } catch (e) {
+
+            d.reject(e)
+        }
+        
         return d.promise;
 
     }
@@ -151,28 +157,31 @@ export class DataService {
 
     savechanges(data: string): Q.Promise<any> {
 
-        this.ds.importEntities(data, { mergeStrategy: breeze.MergeStrategy.OverwriteChanges });
+        return this.context.transactional(tx => {
+
+            this.ds.importEntities(data, { mergeStrategy: breeze.MergeStrategy.OverwriteChanges });
+            
+            return this.postchanges()
+
+        });
         
-        this.on_savingChanges();
-        
-        return this.postchanges();
+    }
+    
+
+    before_post(): Q.Promise<any> {
+        return Q.resolve(true);
     }
 
 
-
-    on_savingChanges() {
-
-
-
+    after_post(): Q.Promise<any> {
+        return Q.resolve(true);
     }
 
 
-
-
-    postchanges(): Q.Promise<any> {
+    private internal_post() {
 
         var dataservice: any = br_sequel.breeze.config.getAdapterInstance('dataService');
-
+        
         var savecontext = {
             entityManager: this.ds,
             dataService: dataservice,
@@ -187,7 +196,21 @@ export class DataService {
 
 
         return this.__saveChanges(saveBundle);
+    }
 
+
+    postchanges(): Q.Promise<any> {
+
+        return this.before_post().then(() => {
+
+            return this.internal_post().then(() => {
+
+                return this.after_post();
+            });
+
+        });
+
+        
     }
 
 
@@ -200,10 +223,8 @@ export class DataService {
 }
 
 
-export function GetService(srvname: string): DataService {
-
-    var _ctx = new ctx.AppContext();
-
+export function GetService(_ctx: ctx.AppContext, srvname: string): DataService {
+    
     if (file_exists(root('/server/services/' + srvname + '.js'))) {
 
         var srv: any = require(root('/server/services/' + srvname));
@@ -215,7 +236,7 @@ export function GetService(srvname: string): DataService {
 
         } catch (e) {
 
-            throw _fn_name;
+            throw e;
         }
 
     } else {

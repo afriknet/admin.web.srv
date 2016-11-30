@@ -2,7 +2,6 @@
 /// <reference path="../datastore/store.ts" />
 "use strict";
 var root = require('root-path');
-var ctx = require('./appcontext');
 var Q = require('q');
 var br_sequel = require(root('/server/breeze_sequel/main'));
 var sequel_manager = br_sequel.SequelizeManager;
@@ -77,25 +76,36 @@ var DataService = (function () {
     };
     DataService.prototype.__saveChanges = function (saveBundle) {
         var d = Q.defer();
-        sequel_save.save(this.context.conn, {
-            body: {
-                entities: JSON.parse(saveBundle).entities
-            }
-        }).then(function () {
-            d.resolve(true);
-        }).catch(function (err) {
-            d.reject(err.message);
-        });
+        try {
+            sequel_save.save(this.context, {
+                body: {
+                    entities: JSON.parse(saveBundle).entities
+                }
+            }).then(function (r) {
+                d.resolve(r);
+            }).catch(function (err) {
+                d.reject(err);
+            });
+        }
+        catch (e) {
+            d.reject(e);
+        }
         return d.promise;
     };
     DataService.prototype.savechanges = function (data) {
-        this.ds.importEntities(data, { mergeStrategy: breeze.MergeStrategy.OverwriteChanges });
-        this.on_savingChanges();
-        return this.postchanges();
+        var _this = this;
+        return this.context.transactional(function (tx) {
+            _this.ds.importEntities(data, { mergeStrategy: breeze.MergeStrategy.OverwriteChanges });
+            return _this.postchanges();
+        });
     };
-    DataService.prototype.on_savingChanges = function () {
+    DataService.prototype.before_post = function () {
+        return Q.resolve(true);
     };
-    DataService.prototype.postchanges = function () {
+    DataService.prototype.after_post = function () {
+        return Q.resolve(true);
+    };
+    DataService.prototype.internal_post = function () {
         var dataservice = br_sequel.breeze.config.getAdapterInstance('dataService');
         var savecontext = {
             entityManager: this.ds,
@@ -106,6 +116,14 @@ var DataService = (function () {
         var saveBundle = dataservice.saveChanges(savecontext, bundle);
         return this.__saveChanges(saveBundle);
     };
+    DataService.prototype.postchanges = function () {
+        var _this = this;
+        return this.before_post().then(function () {
+            return _this.internal_post().then(function () {
+                return _this.after_post();
+            });
+        });
+    };
     // generic call
     DataService.prototype.call = function (args) {
         return this[args.method].call(this, args.params);
@@ -113,8 +131,7 @@ var DataService = (function () {
     return DataService;
 }());
 exports.DataService = DataService;
-function GetService(srvname) {
-    var _ctx = new ctx.AppContext();
+function GetService(_ctx, srvname) {
     if (file_exists(root('/server/services/' + srvname + '.js'))) {
         var srv = require(root('/server/services/' + srvname));
         var _fn_name = Object.keys(srv)[0];
@@ -122,7 +139,7 @@ function GetService(srvname) {
             return (new srv[_fn_name](_ctx, srvname));
         }
         catch (e) {
-            throw _fn_name;
+            throw e;
         }
     }
     else {

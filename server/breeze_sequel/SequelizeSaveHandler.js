@@ -25,9 +25,9 @@ function SequelizeSaveHandler(sequelizeManager, req) {
 
 var ctor = SequelizeSaveHandler;
 
-ctor.save = function(sequelizeManager, req ) {
-  var saveHandler = new SequelizeSaveHandler(sequelizeManager, req);
-  return saveHandler.save();
+ctor.save = function(context, req ) {
+    var saveHandler = new SequelizeSaveHandler(context.conn, req);
+  return saveHandler.save(context);
 };
 
 // virtual method - returns boolean
@@ -37,8 +37,10 @@ ctor.save = function(sequelizeManager, req ) {
 // virtual method - returns nothing
 //ctor.prototype.beforeSaveEntities = function(saveMap)
 
-ctor.prototype.save = function() {
+ctor.prototype.save = function (context) {
+    
   var beforeSaveEntity = (this.beforeSaveEntity || noopBeforeSaveEntity).bind(this);
+
   var entityTypeMap = {};
 
   var entityInfos = this.entitiesFromClient.map(function(entity) {
@@ -76,37 +78,71 @@ ctor.prototype.save = function() {
   // want to have SaveMap functions available
   var saveMap = _.extend(new SaveMap(this), saveMapData);
 
-  return this._saveWithTransaction(saveMap);
+  return this._saveWithTransaction(context, saveMap);
 
 };
 
 
-ctor.prototype._saveWithTransaction = function(saveMap) {
+ctor.prototype._saveWithTransaction = function (context, saveMap) {
+
   var that = this;
-  var sequelize = this.sequelizeManager.sequelize;
-  return sequelize.transaction().then(function(trx)   {
+    
+  var nextPromise;
 
-    var nextPromise;
-    var beforeSaveEntities = (that.beforeSaveEntities || noopBeforeSaveEntities).bind(that);
-    // beforeSaveEntities will either return nothing or a promise.
-    nextPromise = Promise.resolve(beforeSaveEntities(saveMap, trx));
+  return context.transactional(function (trx) {
 
-    // saveCore returns either a list of entities or an object with an errors property.
-    return nextPromise.then(function () {
-      return that._saveCore(saveMap, trx);
-    }).then(function (r) {
-      if (r.errors) {
-        trx.rollback();
-        return r;
-      } else {
-        trx.commit();
-        return { entities: r, keyMappings: that._keyMappings };
-      }
-    }).catch(function (e) {
-      trx.rollback();
-      throw e;
-    });
+      var beforeSaveEntities = (that.beforeSaveEntities || noopBeforeSaveEntities).bind(that);
+
+      // beforeSaveEntities will either return nothing or a promise.
+      nextPromise = Promise.resolve(beforeSaveEntities(saveMap, trx));
+
+      // saveCore returns either a list of entities or an object with an errors property.
+      return nextPromise.then(function () {
+
+          return that._saveCore(saveMap, trx);
+
+      }).then(function (r) {
+
+          if (r.errors) {
+              throw r;
+          } else {
+              return { entities: r, keyMappings: that._keyMappings };
+          }
+
+      });
+
+
   });
+
+  
+  
+
+      //return context.start_transaction().then((trx) => {
+
+      //    return context.transactional( that, trx, () => {
+
+      //        var nextPromise;
+      //        var beforeSaveEntities = (that.beforeSaveEntities || noopBeforeSaveEntities).bind(that);
+
+      //        // beforeSaveEntities will either return nothing or a promise.
+      //        nextPromise = Promise.resolve(beforeSaveEntities(saveMap, trx));
+
+      //        // saveCore returns either a list of entities or an object with an errors property.
+      //        return nextPromise.then(function () {
+      //            return that._saveCore(saveMap, trx);
+      //        }).then(function (e) {
+      //            if (r.errors) {
+      //                throw r;
+      //            } else {
+      //                return { entities: r, keyMappings: that._keyMappings };
+      //            }
+
+      //        })
+          
+      //    })
+
+      //});
+
 };
 
 

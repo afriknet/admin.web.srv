@@ -9,7 +9,8 @@ var fs = require('fs');
 
 var bs = require(root('/server/breeze_sequel/main'));
 var s_mgr = bs.SequelizeManager;
-var sqlize = require('sequelize');
+import sqlz = require('sequelize');
+import Q = require('q');
 
 import store = require('../datastore/store');
 var con = require(root('/config/connections'));
@@ -20,12 +21,58 @@ var conn = null;// boot.start_db(null);
 
 open_db_connection();
 
+export interface Transactional {
+
+    (tx: sqlz.Transaction): Q.Promise<any>
+
+}
 
 export class AppContext {
 
-    get conn(): any {
-        return conn;
+    constructor() {
+        
     }
+
+    private __conn: any;
+
+    get conn(): any {
+
+        if (!this.__conn) {
+            this.__conn = conn;             
+        }
+
+        return this.__conn;
+    }
+
+
+    tx: sqlz.Transaction;
+
+
+    transactional(callback: Transactional) {
+        
+        if (!this.tx) {
+
+            return this.conn.sequelize.transaction(tx => {
+
+                this.tx = tx;
+
+                return callback(tx);
+
+            }).catch(e => {
+
+                throw e
+
+            }).finally(() => {
+
+                this.tx = undefined;
+            });
+
+        } else {
+
+            return callback(this.tx);
+        }        
+    }
+
     
 }
 

@@ -44,39 +44,41 @@ export var operationtype = {
 
 export function dispatch_call(operation: string, req: express.Request, res: express.Response, next: any) {
 
+    var _ctx = new ctx.AppContext();
+
     switch (operation) {
 
         case operationtype.metadata: {
 
-            fetch_metadata(req, res, next);
+            fetch_metadata(_ctx, req, res, next);
 
         } break;
 
 
         case operationtype.fetch: {
 
-            fetch_data(req, res, next);
+            fetch_data( _ctx, req, res, next);
 
         } break;
 
 
         case operationtype.raw: {
 
-            raw(req, res, next);
+            raw(_ctx, req, res, next);
 
         } break;
 
 
         case operationtype.save: {
 
-            save_changes(req, res, next);
+            save_changes( _ctx, req, res, next);
 
         } break;
 
 
         case operationtype.call: {
 
-            call(req, res, next);
+            call( _ctx, req, res, next);
 
         } break;
     }
@@ -103,7 +105,7 @@ function format_qry(qry: any) {
 }
 
 
-function fetch_data(req: express.Request, res: express.Response, next: any) {
+function fetch_data(ctx: ctx.AppContext, req: express.Request, res: express.Response, next: any) {
         
     var __qry: any = format_qry(req.body);  
 
@@ -117,7 +119,7 @@ function fetch_data(req: express.Request, res: express.Response, next: any) {
 
     var qry = new breeze.EntityQuery(__qry);
 
-    var srv: dx.DataService = dx.GetService(qry.resourceName);
+    var srv: dx.DataService = dx.GetService(ctx, qry.resourceName);
 
     srv.fetch(qry).then(data => {
 
@@ -135,15 +137,15 @@ function fetch_data(req: express.Request, res: express.Response, next: any) {
 }
 
 
-function fetch_metadata(req: express.Request, res: express.Response, next: any) {
+function fetch_metadata(ctx: ctx.AppContext, req: express.Request, res: express.Response, next: any) {
 
     res.send(store.ModelStore.exportMetadata());
 }
 
 
-function save_changes(req: express.Request, res: express.Response, next: any) {
+function save_changes(ctx: ctx.AppContext, req: express.Request, res: express.Response, next: any) {
     
-    var srv = get_service(req.body['service']);
+    var srv = get_service(ctx, req.body['service']);
 
     srv.savechanges(req.body['entities']).then(rst => {
 
@@ -153,7 +155,7 @@ function save_changes(req: express.Request, res: express.Response, next: any) {
 
         res.send(response);
 
-    }).fail(err => {
+    }).catch(err => {
 
         res.status(500).send(JSON.stringify(err));
 
@@ -162,9 +164,9 @@ function save_changes(req: express.Request, res: express.Response, next: any) {
 }
 
 
-function raw(req: express.Request, res: express.Response, next: any) {
+function raw(ctx: ctx.AppContext, req: express.Request, res: express.Response, next: any) {
     
-    var srv = get_service(req.body['service']);
+    var srv = get_service(ctx, req.body['service']);
 
     srv.exec_sql({
         sql: req.body['sql']
@@ -182,9 +184,9 @@ function raw(req: express.Request, res: express.Response, next: any) {
 }
 
 
-function call(req: express.Request, res: express.Response, next: any) {
+function call(ctx: ctx.AppContext, req: express.Request, res: express.Response, next: any) {
     
-    var srv: dx.DataService = get_service(req.body['service']);
+    var srv: dx.DataService = get_service(ctx, req.body['service']);
 
     srv.call({
         method: req.body['method'],
@@ -201,8 +203,8 @@ function call(req: express.Request, res: express.Response, next: any) {
 }
 
 
-function get_service(srvname: string) {
+function get_service(ctx: ctx.AppContext, srvname: string) {
 
-    return dx.GetService(srvname);
+    return dx.GetService(ctx, srvname);
     
 }
