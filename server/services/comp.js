@@ -22,9 +22,9 @@ var CompSrv = (function (_super) {
             _this.create_company(info).then(function (compid) {
                 _this.create_primary_department(compid, info).then(function (deptid) {
                     _this.invite_user(compid, deptid, info).then(function (usr_data) {
-                        var usr = srv.GetService(_this.context, 'usr');
+                        var usr = srv.GetService(_this.context, 'emp');
                         usr.ds.importEntities(usr_data);
-                        var usrid = _.result(usr.ds.getEntities('usr')[0], 'id');
+                        var usrid = _.result(usr.ds.getEntities('emp')[0], 'usrid');
                         p.resolve({
                             compid: compid,
                             deptid: deptid,
@@ -34,6 +34,8 @@ var CompSrv = (function (_super) {
                 });
             });
             return p.promise;
+        }).then(function () {
+            d.resolve();
         });
         return d.promise;
     };
@@ -57,15 +59,16 @@ var CompSrv = (function (_super) {
         dept.ds.createEntity('compdept', {
             id: __id,
             compid: compid,
-            deptname: 'Primary department'
+            deptname: 'Main department'
         });
         return dept.postchanges().then(function () {
             return __id;
         });
     };
     CompSrv.prototype.invite_user = function (compid, deptid, info) {
-        var emp = srv.GetService(this.context, 'compdept');
+        var emp = srv.GetService(this.context, 'emp');
         return emp['invite_new_user']({
+            backendid: info.backendid,
             compid: compid,
             deptid: deptid,
             usremail: info.email,

@@ -28,28 +28,24 @@ export class CompSrv extends srv.DataService {
 
             var p = Q.defer();
 
-            this.create_company(info).then( compid => {
-
+            this.create_company(info).then(compid => {
 
                 this.create_primary_department(compid, info).then(deptid => {
-
-
+                    
                     this.invite_user(compid, deptid, info).then((usr_data) => {
 
-
-                        var usr = srv.GetService(this.context, 'usr');
+                        var usr = srv.GetService(this.context, 'emp');
 
                         usr.ds.importEntities(usr_data);
 
-                        var usrid = _.result(usr.ds.getEntities('usr')[0], 'id');
+                        var usrid = _.result(usr.ds.getEntities('emp')[0], 'usrid');
 
                         p.resolve({
                             compid: compid,
                             deptid: deptid,
                             usrid: usrid
                         });
-
-
+                        
                     });
 
                 });
@@ -57,6 +53,11 @@ export class CompSrv extends srv.DataService {
             });
 
             return p.promise;
+
+        }).then(() => {
+
+            d.resolve();
+
         });
 
         return d.promise;
@@ -92,7 +93,7 @@ export class CompSrv extends srv.DataService {
         dept.ds.createEntity('compdept', {
             id: __id,
             compid: compid,
-            deptname: 'Primary department'
+            deptname: 'Main department'
         });
 
         return dept.postchanges().then(() => {
@@ -105,7 +106,7 @@ export class CompSrv extends srv.DataService {
 
     private invite_user(compid: string, deptid: string, info: RegisterInfo): Q.Promise<any> {
 
-        var emp = srv.GetService(this.context, 'compdept');
+        var emp = srv.GetService(this.context, 'emp');
 
         return emp['invite_new_user']({
             backendid: info.backendid,
