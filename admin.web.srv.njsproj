@@ -46,6 +46,7 @@
     <Compile Include="config\views.js" />
     <Content Include="server\breeze_sequel\package.json" />
     <Content Include="server\breeze_sequel\README.md" />
+    <Content Include="server\services\usr.js.map" />
     <Content Include="tasks\README.md" />
     <Compile Include="server\breeze_sequel\dbUtils.js" />
     <Compile Include="server\breeze_sequel\main.js" />
@@ -56,6 +57,7 @@
     <Compile Include="server\breeze_sequel\sequelizeUtils.js" />
     <Compile Include="server\breeze_sequel\utils.js" />
     <Compile Include="server\datastore\meta.js" />
+    <Compile Include="server\services\usr.js" />
     <Compile Include="tasks\pipeline.js" />
     <Content Include="tsconfig.json" />
     <Content Include="views\403.ejs" />
@@ -159,6 +161,7 @@
     <TypeScriptCompile Include="server\services\compdept.ts" />
     <TypeScriptCompile Include="server\services\emp.ts" />
     <TypeScriptCompile Include="server\services\prof.ts" />
+    <TypeScriptCompile Include="server\services\usr.ts" />
     <TypeScriptCompile Include="typings\breeze\breeze.d.ts" />
     <TypeScriptCompile Include="typings\express\express.d.ts" />
     <TypeScriptCompile Include="typings\formidable\formidable.d.ts" />
