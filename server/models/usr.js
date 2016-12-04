@@ -11,6 +11,7 @@ store.add_to_Store({
         usremail: { dataType: breeze.DataType.String },
         usrpic: { dataType: breeze.DataType.String },
         usrstatus: { dataType: breeze.DataType.Int32 },
+        usrtype: { dataType: breeze.DataType.Int32 },
         usrlinkedin: { dataType: breeze.DataType.String },
         usrgoogleplus: { dataType: breeze.DataType.String },
         usrfacebook: { dataType: breeze.DataType.String }
@@ -24,6 +25,11 @@ store.add_to_Store({
         usrs: {
             entityTypeName: "usrs",
             associationName: "rel_usr_usrs",
+            isScalar: false
+        },
+        jrb: {
+            entityTypeName: "jrb",
+            associationName: "rel_usr_jbr",
             isScalar: false
         }
     }
@@ -54,6 +60,28 @@ store.add_to_Store({
         item: {
             type: "usr",
             assoc: "rel_usr_usrs",
+            foreignKeyNames: ["usrid"]
+        }
+    }
+});
+store.add_to_Store({
+    defaultResourceName: 'jbr',
+    dataProperties: {
+        id: { dataType: breeze.DataType.String, isPartOfKey: true },
+        compid: { dataType: breeze.DataType.String },
+        empid: { dataType: breeze.DataType.String },
+        deptid: { dataType: breeze.DataType.String },
+        jobdescr: { dataType: breeze.DataType.String },
+        jbrcomp: { dataType: breeze.DataType.String },
+        jbrlocation: { dataType: breeze.DataType.String },
+        jobstartdate: { dataType: breeze.DataType.DateTime },
+        jobenddate: { dataType: breeze.DataType.DateTime },
+        jobnotes: { dataType: breeze.DataType.String }
+    },
+    navigationProperties: {
+        emp: {
+            type: "usr",
+            assoc: "rel_usr_jbr",
             foreignKeyNames: ["usrid"]
         }
     }

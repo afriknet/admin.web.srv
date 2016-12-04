@@ -6,6 +6,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var srv = require('../lib/dataservice');
+var guid = require('guid');
 var UsrSrv = (function (_super) {
     __extends(UsrSrv, _super);
     function UsrSrv() {

@@ -28,6 +28,11 @@ store.add_to_Store({
                 entityTypeName: "usrs",
                 associationName: "rel_usr_usrs",
                 isScalar: false
+            },
+            jrb: {
+                entityTypeName: "jrb",
+                associationName: "rel_usr_jbr",
+                isScalar: false
             }            
     }
 });

@@ -41,7 +41,8 @@ var EmpSrv = (function (_super) {
                     usrsurname: args.usrsurname,
                     usremail: args.usremail,
                     usrpassword: '123456789',
-                    usrstatus: parseInt(args.usrstatus) // pending invitation
+                    usrstatus: parseInt(args.usrstatus),
+                    usrtype: 2
                 });
                 usr_srv.postchanges().then(function () {
                     emp_srv.ds.createEntity('emp', {
