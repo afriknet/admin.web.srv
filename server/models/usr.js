@@ -27,8 +27,8 @@ store.add_to_Store({
             associationName: "rel_usr_usrs",
             isScalar: false
         },
-        jrb: {
-            entityTypeName: "jrb",
+        jbr: {
+            entityTypeName: "jbr",
             associationName: "rel_usr_jbr",
             isScalar: false
         }
@@ -68,6 +68,7 @@ store.add_to_Store({
     defaultResourceName: 'jbr',
     dataProperties: {
         id: { dataType: breeze.DataType.String, isPartOfKey: true },
+        usrid: { dataType: breeze.DataType.String },
         compid: { dataType: breeze.DataType.String },
         empid: { dataType: breeze.DataType.String },
         deptid: { dataType: breeze.DataType.String },
@@ -79,7 +80,7 @@ store.add_to_Store({
         jobnotes: { dataType: breeze.DataType.String }
     },
     navigationProperties: {
-        emp: {
+        usr: {
             type: "usr",
             assoc: "rel_usr_jbr",
             foreignKeyNames: ["usrid"]
